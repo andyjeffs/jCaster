@@ -1,4 +1,4 @@
-jaycaster
+jCaster
 =========
 
 A JavaScript Ray Caster
