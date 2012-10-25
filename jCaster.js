@@ -10,16 +10,16 @@ var TileHeight = 64;
 
 var FOV = Math.PI/3; // field of view of the player
 
-var FPS = 30; // frames per second
+var FPS = 5; // frames per second
 
 // the world map
 var map = [1,1,1,1,1,1,1,1,1,1,
            1,0,0,0,0,0,0,0,0,1,
            1,0,0,0,0,0,0,0,0,1,
-           1,0,0,0,1,1,1,1,0,1,
-           1,0,0,0,1,0,0,0,0,1,
-           1,0,0,0,1,0,0,0,0,1,
-           1,0,0,0,1,0,0,0,0,1,
+           1,0,0,0,0,0,0,0,0,1,
+           1,0,0,0,0,0,0,0,0,1,
+           1,0,0,0,0,0,1,1,0,1,
+           1,0,0,1,1,1,1,0,0,1,
            1,0,0,0,0,0,0,0,0,1,
            1,0,0,0,0,0,0,0,0,1,
            1,1,1,1,1,1,1,1,1,1];
@@ -27,7 +27,7 @@ var map = [1,1,1,1,1,1,1,1,1,1,
 // player
 var playerX = 200;
 var playerY = 200;
-var playerDir = Math.PI; // direction the player is looking in (degrees)
+var playerDir = Math.PI/3 + Math.PI/2;//2*Math.PI/3; // direction the player is looking in (degrees)
 
 var rotationAmount = Math.PI/180*5; // amount to rotate player (CW or CCW)
 var moveDistance = 3;	  // amount to move the player (forward or backward)
@@ -56,13 +56,15 @@ function drawMap()
 		{
 			if(map[(y*MapHeight) + x] == 1)
 			{
-				canvas.fillStyle = "#00FF00";
+				canvas.fillStyle = "lime";
 			}
 			else
 			{
-				canvas.fillStyle = "#FF0000";
+				canvas.fillStyle = "red";
 			}
 			canvas.fillRect(x*TileWidth,y*TileHeight,TileWidth,TileHeight);
+			canvas.strokeStyle = "black";
+			canvas.strokeRect(x*TileWidth,y*TileHeight,TileWidth,TileHeight);
 		}
 	}	
 }
@@ -81,7 +83,7 @@ function drawRays()
 {	
 	l = 1000;
 
-	canvas.strokeStyle = "#0000FF";
+	canvas.strokeStyle = "blue";
 	for(var i=(playerDir-FOV/2); i < (playerDir+FOV/2); i = i + (Math.PI/360))
 	{
 		canvas.moveTo(playerX,playerY);
@@ -132,11 +134,155 @@ function printDebug()
 }
 
 init();
+drawMap();
+gameLoop();
+
+function castRayY(angle)
+{
+	x = 0.0;
+	y = 0.0;
+	deltay = 0.0;
+
+	currentTileX = Math.floor(playerX/TileWidth) + 1;
+	currentTileY = Math.floor(playerY/TileHeight) + 1;
+
+	// compute the first Y intercept
+	if(playerDir > Math.PI/2 && angle < Math.PI)
+	{
+		// 2nd quadrant
+		x = currentTileX*TileHeight;
+		// get the corresponding y coord
+		deltay = (x-playerX)*Math.tan(Math.PI/2 + angle);
+		y = playerY + deltay;
+
+		// check for a collision
+		tx = Math.floor(x/TileWidth);
+		ty = Math.floor(y/TileHeight);
+		element = (ty*MapHeight) + tx;
+
+		console.log(element);
+		console.log(map[element]);
+		
+		while(map[element] == 0)
+		{	
+			// compute the next Y intercept 
+			y += deltay;
+			x += TileWidth;
+
+			console.log(x + "," + y);
+
+			// check for a collision
+			tx = Math.floor(x/TileWidth);
+			ty = Math.floor(y/TileHeight);
+			element = (ty*MapHeight) + tx;
+
+			console.log(element);
+			console.log(map[element]);
+		}
+
+		canvas.strokeStyle = "black";
+		canvas.moveTo(playerX,playerY);
+		canvas.lineTo(x,y);
+		canvas.stroke();
+	}
+
+	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
+
+	return distance;
+}
+
+
 
 function gameLoop()
 {
 	drawMap();
 	drawPlayer();
-	drawRays();
+
+		//canvas.moveTo(playerX,playerY);
+		//l=500;
+		//x = l*Math.sin(playerDir);
+		//y = l*Math.cos(playerDir);
+	
+		//canvas.lineTo(playerX + x, playerY - y);
+		//canvas.stroke();
+castRays();
+
+	//drawRays();
 	//printDebug();
+}
+
+function castRayX(angle)
+{
+	x = 0.0;
+	y = 0.0;
+	deltax = 0.0;
+
+	currentTileX = Math.floor(playerX/TileWidth) + 1;
+	currentTileY = Math.floor(playerY/TileHeight) + 1;
+
+	console.log("Angle " + angle*180.0/Math.PI);
+
+	// compute the first X intercept
+	if(playerDir > Math.PI/2 && angle < Math.PI)
+	{
+		// 2nd quadrant
+		y = currentTileX*TileWidth;
+		// get the corresponding y coord
+		deltax = (y-playerY)/Math.tan(angle - Math.PI/2);
+		x = playerX + deltax;
+
+		// check for a collision
+		tx = Math.floor(x/TileWidth);
+		ty = Math.floor(y/TileHeight);
+		element = (ty*MapHeight) + tx;
+
+		console.log(element);
+		console.log(map[element]);
+		
+		while(map[element] == 0)
+		{	
+			// compute the next X intercept 
+			x += deltax;
+			y += TileHeight;
+
+			console.log(x + "," + y);
+
+			// check for a collision
+			tx = Math.floor(x/TileWidth);
+			ty = Math.floor(y/TileHeight);
+			element = (ty*MapHeight) + tx;
+
+			console.log(element);
+			console.log(map[element]);
+		}
+
+		canvas.strokeStyle = "black";
+		canvas.moveTo(playerX,playerY);
+		canvas.lineTo(x,y);
+		canvas.stroke();
+	}
+
+	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
+
+	return distance;
+}
+
+function castRays()
+{
+	var distX = castRayX(playerDir);
+	var distY = castRayY(playerDir);
+
+	console.log(distX + " - " + distY );
+
+	var dist = Math.min(distX,distY);
+
+	console.log(dist);
+
+	// draw the ray
+	x = dist*Math.sin(playerDir);
+	y = dist*Math.cos(playerDir);
+	canvas.strokeStyle = "blue";
+	canvas.moveTo(playerX,playerY);
+	canvas.lineTo(playerX + x, playerY - y);
+	canvas.stroke();
 }
