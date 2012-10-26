@@ -322,10 +322,12 @@ function castRays()
 	// canvas.closePath();
 	
 	var x5=0;
-	
+	var FOVCorrect = -Math.PI/6;
+
 	//for(var i=(playerDir-FOV/2); i < (playerDir+FOV/2); i = i + (Math.PI/360))
 	for(var i=(playerDir-FOV/2); i < (playerDir+FOV/2); i += AngleIncrement)
 	{
+		FOVCorrect += AngleIncrement;
 		// cast the rays
 		var distX = castRayX(i);
 		var distY = castRayY(i);
@@ -347,6 +349,8 @@ function castRays()
 		canvas.stroke();
 		canvas.closePath();
 
+		dist = dist*Math.cos(FOVCorrect);
+
 		height = 64/dist*277;
 		x5 = x5 + 1;
 
@@ -357,8 +361,6 @@ function castRays()
 		canvas.stroke();
 		canvas.closePath();
 	}
-
-	printMsg("angle = " + x);
 }
 
 function printMsg(msg)
