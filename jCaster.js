@@ -8,7 +8,11 @@ var MapHeight = 10;
 var TileWidth = 64;
 var TileHeight = 64;
 
+var ScreenWidth = 320;
+
 var FOV = Math.PI/3; // field of view of the player
+
+var AngleIncrement = FOV/ScreenWidth;
 
 var FPS = 30; // frames per second
 
@@ -304,7 +308,7 @@ function castRayX(angle)
 
 function castRays()
 {
-	printMsg("angle = " + playerDir*(180/Math.PI));
+	//printMsg("angle = " + playerDir*(180/Math.PI));
 
 	// draw the direction of the player
 	x = 300*Math.sin(playerDir);
@@ -317,7 +321,10 @@ function castRays()
 	// canvas.stroke();
 	// canvas.closePath();
 	
-	for(var i=(playerDir-FOV/2); i < (playerDir+FOV/2); i = i + (Math.PI/360))
+	var x5=0;
+	
+	//for(var i=(playerDir-FOV/2); i < (playerDir+FOV/2); i = i + (Math.PI/360))
+	for(var i=(playerDir-FOV/2); i < (playerDir+FOV/2); i += AngleIncrement)
 	{
 		// cast the rays
 		var distX = castRayX(i);
@@ -339,7 +346,19 @@ function castRays()
 		canvas.lineTo(playerX + x, playerY - y);
 		canvas.stroke();
 		canvas.closePath();
+
+		height = 64/dist*277;
+		x5 = x5 + 1;
+
+		canvas.beginPath();
+		canvas.strokeStyle = "blue";
+		canvas.moveTo(x5,100+height/2);
+		canvas.lineTo(x5,100-height/2);
+		canvas.stroke();
+		canvas.closePath();
 	}
+
+	printMsg("angle = " + x);
 }
 
 function printMsg(msg)
