@@ -160,26 +160,12 @@ function castRayY(angle)
 		y = playerY + deltay;
 		y1 = y;
 
-		canvas.beginPath();
-		canvas.strokeStyle = "black";
-		canvas.moveTo(playerX,playerY);
-		canvas.lineTo(x,y);
-		canvas.stroke();
-		canvas.closePath();
-
 		if(checkTile(x,y) == 0)
 		{
 			// compute the next intercept
 			x += TileWidth;
 			y = playerY + (x-playerX)*Math.tan(Math.PI/2 + angle);
 			y2 = y;
-
-			canvas.beginPath();
-			canvas.strokeStyle = "green";
-			canvas.moveTo(playerX,playerY);
-			canvas.lineTo(x,y);
-			canvas.stroke();
-			canvas.closePath();
 
 			while(checkTile(x,y) == 0)
 			{
@@ -189,15 +175,17 @@ function castRayY(angle)
 				x += TileWidth;
 				y += deltay; 
 
-				canvas.beginPath();
-				canvas.strokeStyle = "pink";
-				canvas.moveTo(playerX,playerY);
-				canvas.lineTo(x,y);
-				canvas.stroke();
-				canvas.closePath();
+
 			}
 		}
 	}
+
+	canvas.beginPath();
+	canvas.strokeStyle = "green";
+	canvas.moveTo(playerX,playerY);
+	canvas.lineTo(x,y);
+	canvas.stroke();
+	canvas.closePath();
 
 	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
 
@@ -210,34 +198,44 @@ function castRayX(angle)
 	y = 0.0;
 	deltax = 0.0;
 
-	currentTileX = Math.floor(playerX/TileWidth) + 1;
-	currentTileY = Math.floor(playerY/TileHeight) + 1;
+	c = currentTile(playerX, playerY);
 
-	//console.log("Angle " + angle*180.0/Math.PI);
+	currentTileY = c[1];
 
 	// compute the first X intercept
 	if(playerDir > Math.PI/2 && angle < Math.PI)
 	{
 		// 2nd quadrant
-		y = currentTileX*TileWidth;
-		// get the corresponding y coord
+		y = currentTileY*TileWidth + TileWidth;
+		// get the corresponding x coord
 		deltax = (y-playerY)/Math.tan(angle - Math.PI/2);
 		x = playerX + deltax;
-		
-		while(checkTile(x,y) == 0)
-		{	
-			// compute the next X intercept 
-			x += deltax;
-			y += TileHeight;
-		}
+		x1 = x;
 
-		canvas.beginPath();
-		canvas.strokeStyle = "blue";
-		canvas.moveTo(playerX,playerY);
-		canvas.lineTo(x,y);
-		canvas.stroke();
-		canvas.closePath();
+		if(checkTile(x,y) == 0)
+		{
+			// compute the next intercept
+			y += TileHeight;
+			x = playerX + (y-playerY)/Math.tan(angle - Math.PI/2);
+			x2 = x;
+
+			while(checkTile(x,y) == 0)
+			{
+				deltax = x2 - x1;
+
+				// compute the next intercept
+				x += deltax;
+				y += TileHeight;
+			}
+		}
 	}
+
+	canvas.beginPath();
+	canvas.strokeStyle = "blue";
+	canvas.moveTo(playerX,playerY);
+	canvas.lineTo(x,y);
+	canvas.stroke();
+	canvas.closePath();
 
 	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
 
@@ -261,7 +259,7 @@ function castRays()
 
 	// cast the rays
 	var distX = castRayX(playerDir);
-	var distY = castRayY(playerDir);
+	var distY = 0;//castRayY(playerDir);
 
 	//console.log(distX + " - " + distY );
 
