@@ -180,12 +180,12 @@ function castRayY(angle)
 		}
 	}
 
-	canvas.beginPath();
-	canvas.strokeStyle = "green";
-	canvas.moveTo(playerX,playerY);
-	canvas.lineTo(x,y);
-	canvas.stroke();
-	canvas.closePath();
+	// canvas.beginPath();
+	// canvas.strokeStyle = "green";
+	// canvas.moveTo(playerX,playerY);
+	// canvas.lineTo(x,y);
+	// canvas.stroke();
+	// canvas.closePath();
 
 	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
 
@@ -230,12 +230,12 @@ function castRayX(angle)
 		}
 	}
 
-	canvas.beginPath();
-	canvas.strokeStyle = "blue";
-	canvas.moveTo(playerX,playerY);
-	canvas.lineTo(x,y);
-	canvas.stroke();
-	canvas.closePath();
+	// canvas.beginPath();
+	// canvas.strokeStyle = "blue";
+	// canvas.moveTo(playerX,playerY);
+	// canvas.lineTo(x,y);
+	// canvas.stroke();
+	// canvas.closePath();
 
 	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
 
@@ -250,16 +250,16 @@ function castRays()
 	x = 300*Math.sin(playerDir);
 	y = 300*Math.cos(playerDir);
 
-	canvas.beginPath();
-	canvas.strokeStyle = "white";
-	canvas.moveTo(playerX,playerY);
-	canvas.lineTo(playerX + x, playerY - y);
-	canvas.stroke();
-	canvas.closePath();
+	// canvas.beginPath();
+	// canvas.strokeStyle = "white";
+	// canvas.moveTo(playerX,playerY);
+	// canvas.lineTo(playerX + x, playerY - y);
+	// canvas.stroke();
+	// canvas.closePath();
 
 	// cast the rays
 	var distX = castRayX(playerDir);
-	var distY = 0;//castRayY(playerDir);
+	var distY = castRayY(playerDir);
 
 	//console.log(distX + " - " + distY );
 
@@ -268,15 +268,15 @@ function castRays()
 	//console.log(dist);
 
 	// draw the ray
-	// x = dist*Math.sin(playerDir);
-	// y = dist*Math.cos(playerDir);
+	x = dist*Math.sin(playerDir);
+	y = dist*Math.cos(playerDir);
 
-	// canvas.beginPath();
-	// canvas.strokeStyle = "white";
-	// canvas.moveTo(playerX,playerY);
-	// canvas.lineTo(playerX + x, playerY - y);
-	// canvas.stroke();
-	// canvas.closePath();
+	canvas.beginPath();
+	canvas.strokeStyle = "white";
+	canvas.moveTo(playerX,playerY);
+	canvas.lineTo(playerX + x, playerY - y);
+	canvas.stroke();
+	canvas.closePath();
 }
 
 function printMsg(msg)
