@@ -257,26 +257,29 @@ function castRays()
 	// canvas.stroke();
 	// canvas.closePath();
 
-	// cast the rays
-	var distX = castRayX(playerDir);
-	var distY = castRayY(playerDir);
+	for(var i=(playerDir-FOV/2); i < (playerDir+FOV/2); i = i + (Math.PI/360))
+	{
+		// cast the rays
+		var distX = castRayX(i);
+		var distY = castRayY(i);
 
-	//console.log(distX + " - " + distY );
+		//console.log(distX + " - " + distY );
 
-	var dist = Math.min(distX,distY);
+		var dist = Math.min(distX,distY);
 
-	//console.log(dist);
+		//console.log(dist);
 
-	// draw the ray
-	x = dist*Math.sin(playerDir);
-	y = dist*Math.cos(playerDir);
+		// draw the ray
+		x = dist*Math.sin(i);
+		y = dist*Math.cos(i);
 
-	canvas.beginPath();
-	canvas.strokeStyle = "white";
-	canvas.moveTo(playerX,playerY);
-	canvas.lineTo(playerX + x, playerY - y);
-	canvas.stroke();
-	canvas.closePath();
+		canvas.beginPath();
+		canvas.strokeStyle = "white";
+		canvas.moveTo(playerX,playerY);
+		canvas.lineTo(playerX + x, playerY - y);
+		canvas.stroke();
+		canvas.closePath();
+	}
 }
 
 function printMsg(msg)
