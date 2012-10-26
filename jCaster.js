@@ -161,10 +161,10 @@ function castRayY(angle)
 	currentTileX = c[0];
 
 	// compute the first Y intercept
-	if(playerDir > Math.PI/2 && angle < Math.PI)
+	if(playerDir > 0 && angle < Math.PI)
 	{
-		// 2nd quadrant
-		x = currentTileX*TileHeight + TileHeight;
+		// 1st or 2nd quadrant
+		x = currentTileX*TileWidth + TileWidth;
 		// get the corresponding y coord
 		deltay = (x-playerX)*Math.tan(Math.PI/2 + angle);
 		y = playerY + deltay;
@@ -187,13 +187,39 @@ function castRayY(angle)
 			}
 		}
 	}
+	else
+	{
+		// 3rd or 4th quadrant
+		x = currentTileX*TileWidth - TileWidth;
+		// get the corresponding y coord
+		deltay = (x-playerX)*Math.tan(Math.PI/2 + angle);
+		y = playerY + deltay;
+		y1 = y;
 
-	// canvas.beginPath();
-	// canvas.strokeStyle = "green";
-	// canvas.moveTo(playerX,playerY);
-	// canvas.lineTo(x,y);
-	// canvas.stroke();
-	// canvas.closePath();
+		if(checkTile(x - TileWidth,y) == 0)
+		{
+			// compute the next intercept
+			x -= TileWidth;
+			y = playerY + (x-playerX)*Math.tan(Math.PI/2 + angle);
+			y2 = y;
+
+			while(checkTile(x - TileWidth,y) == 0)
+			{
+				deltay = y2 - y1;
+
+				// compute the next intercept
+				x -= TileWidth;
+				y += deltay; 
+			}
+		}
+	}
+
+	canvas.beginPath();
+	canvas.strokeStyle = "green";
+	canvas.moveTo(playerX,playerY);
+	canvas.lineTo(x,y);
+	canvas.stroke();
+	canvas.closePath();
 
 	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
 
@@ -264,12 +290,12 @@ function castRayX(angle)
 		}
 	}
 
-	canvas.beginPath();
-	canvas.strokeStyle = "blue";
-	canvas.moveTo(playerX,playerY);
-	canvas.lineTo(x,y);
-	canvas.stroke();
-	canvas.closePath();
+	// canvas.beginPath();
+	// canvas.strokeStyle = "blue";
+	// canvas.moveTo(playerX,playerY);
+	// canvas.lineTo(x,y);
+	// canvas.stroke();
+	// canvas.closePath();
 
 	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
 
@@ -294,8 +320,8 @@ function castRays()
 	if(1)//for(var i=(playerDir-FOV/2); i < (playerDir+FOV/2); i = i + (Math.PI/360))
 	{
 		// cast the rays
-		var distX = castRayX(i);
-		var distY = 0;//castRayY(i);
+		var distX = 0;//castRayX(i);
+		var distY = castRayY(i);
 
 		//console.log(distX + " - " + distY );
 
