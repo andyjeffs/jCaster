@@ -109,6 +109,11 @@ function keyDown(event)
 		// left arrow - rotate player CCW
 		case 37:
 		playerDir-= rotationAmount;
+
+		if(playerDir < 0)
+		{
+			playerDir = playerDir + 2*Math.PI;
+		}
 		break;
 
 		// up arrow - move forward
@@ -120,6 +125,11 @@ function keyDown(event)
 		// right arrow - rotate player CW
 		case 39:
 		playerDir+=rotationAmount;
+
+		if(playerDir > 2*Math.PI)
+		{
+			playerDir = playerDir - 2*Math.PI;
+		}
 		break;
 
 		// down arrow - move back
@@ -174,8 +184,6 @@ function castRayY(angle)
 				// compute the next intercept
 				x += TileWidth;
 				y += deltay; 
-
-
 			}
 		}
 	}
@@ -203,10 +211,10 @@ function castRayX(angle)
 	currentTileY = c[1];
 
 	// compute the first X intercept
-	if(playerDir > Math.PI/2 && angle < Math.PI)
+	if(playerDir > Math.PI/2 && angle < 3*Math.PI/2)
 	{
-		// 2nd quadrant
-		y = currentTileY*TileWidth + TileWidth;
+		// 2nd or 3rd quadrant
+		y = currentTileY*TileHeight + TileHeight;
 		// get the corresponding x coord
 		deltax = (y-playerY)/Math.tan(angle - Math.PI/2);
 		x = playerX + deltax;
@@ -229,13 +237,39 @@ function castRayX(angle)
 			}
 		}
 	}
+	else
+	{
+		// 1st or 4th quadrant
+		y = currentTileY*TileHeight - TileHeight;
+		// get the corresponding x coord
+		deltax = (y-playerY)/Math.tan(angle - Math.PI/2);
+		x = playerX + deltax;
+		x1 = x;
 
-	// canvas.beginPath();
-	// canvas.strokeStyle = "blue";
-	// canvas.moveTo(playerX,playerY);
-	// canvas.lineTo(x,y);
-	// canvas.stroke();
-	// canvas.closePath();
+		if(checkTile(x,y - TileHeight) == 0)
+		{
+			// compute the next intercept
+			y -= TileHeight;
+			x = playerX + (y-playerY)/Math.tan(angle - Math.PI/2);
+			x2 = x;
+
+			while(checkTile(x,y - TileHeight) == 0)
+			{
+				deltax = x2 - x1;
+
+				// compute the next intercept
+				x += deltax;
+				y -= TileHeight;
+			}
+		}
+	}
+
+	canvas.beginPath();
+	canvas.strokeStyle = "blue";
+	canvas.moveTo(playerX,playerY);
+	canvas.lineTo(x,y);
+	canvas.stroke();
+	canvas.closePath();
 
 	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
 
@@ -256,12 +290,12 @@ function castRays()
 	// canvas.lineTo(playerX + x, playerY - y);
 	// canvas.stroke();
 	// canvas.closePath();
-
-	for(var i=(playerDir-FOV/2); i < (playerDir+FOV/2); i = i + (Math.PI/360))
+	i = playerDir;
+	if(1)//for(var i=(playerDir-FOV/2); i < (playerDir+FOV/2); i = i + (Math.PI/360))
 	{
 		// cast the rays
 		var distX = castRayX(i);
-		var distY = castRayY(i);
+		var distY = 0;//castRayY(i);
 
 		//console.log(distX + " - " + distY );
 
@@ -273,12 +307,12 @@ function castRays()
 		x = dist*Math.sin(i);
 		y = dist*Math.cos(i);
 
-		canvas.beginPath();
-		canvas.strokeStyle = "white";
-		canvas.moveTo(playerX,playerY);
-		canvas.lineTo(playerX + x, playerY - y);
-		canvas.stroke();
-		canvas.closePath();
+		// canvas.beginPath();
+		// canvas.strokeStyle = "white";
+		// canvas.moveTo(playerX,playerY);
+		// canvas.lineTo(playerX + x, playerY - y);
+		// canvas.stroke();
+		// canvas.closePath();
 	}
 }
 
