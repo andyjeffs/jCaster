@@ -1,6 +1,7 @@
 //jCaster - a HTML5 JavaScript Ray Caster - Andrew Jeffs 2012
 
 var canvas = null;
+var canvas3d = null;
 
 // world constants
 var MapWidth = 10;
@@ -359,8 +360,8 @@ function castRays()
 
 		canvas3d.beginPath();
 		canvas3d.strokeStyle = "brown";
-		canvas3d.moveTo(x5,100+height/2);
-		canvas3d.lineTo(x5,100-height/2);
+		canvas3d.moveTo(x5,ScreenHeight/2-height/2);
+		canvas3d.lineTo(x5,ScreenHeight/2+height/2);
 		canvas3d.stroke();
 		canvas3d.closePath();
 	}
@@ -416,13 +417,13 @@ function currentTile(worldX, worldY)
 function drawFloorAndSky()
 {
 	// draw the sky
-	canvas.beginPath();
+	canvas3d.beginPath();
 	canvas3d.fillStyle = "blue";
 	canvas3d.fillRect(0,0,ScreenWidth,ScreenHeight/2);
 	canvas3d.closePath();
 
 	// draw the floor
-	canvas.beginPath();
+	canvas3d.beginPath();
 	canvas3d.fillStyle = "yellow";
 	canvas3d.fillRect(0,ScreenHeight/2,ScreenWidth,ScreenHeight);
 	canvas3d.closePath();		
