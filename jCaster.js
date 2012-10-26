@@ -10,7 +10,7 @@ var TileHeight = 64;
 
 var FOV = Math.PI/3; // field of view of the player
 
-var FPS = 5; // frames per second
+var FPS = 30; // frames per second
 
 // the world map
 var map = [1,1,1,1,1,1,1,1,1,1,
@@ -205,8 +205,8 @@ function gameLoop()
 	
 		//canvas.lineTo(playerX + x, playerY - y);
 		//canvas.stroke();
-castRays();
-
+	castRays();
+	checkTile(playerX,playerY);
 	//drawRays();
 	//printDebug();
 }
@@ -285,4 +285,25 @@ function castRays()
 	canvas.moveTo(playerX,playerY);
 	canvas.lineTo(playerX + x, playerY - y);
 	canvas.stroke();
+}
+
+function printMsg(msg)
+{
+	// print the player view direction
+	canvas.font = "14px Arial";
+	canvas.fillStyle = "black";
+	canvas.fillText(msg,20,20);
+}
+
+// Checks if there is a tile at the current world x,y position
+function checkTile(worldX, worldY)
+{
+	tileX = Math.floor(worldX/TileWidth);
+	tileY = Math.floor(worldY/TileHeight);
+
+	content = map[(tileY*MapHeight) + tileX];
+
+	printMsg("Tile x: " + tileX + " Tile y: " + tileY + " Content: " + content);
+
+	return content;
 }
