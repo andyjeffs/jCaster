@@ -9,6 +9,7 @@ var TileWidth = 64;
 var TileHeight = 64;
 
 var ScreenWidth = 320;
+var ScreenHeight = 200;
 
 var FOV = Math.PI/3; // field of view of the player
 
@@ -40,6 +41,8 @@ function init()
 {
 	// get the canvas
 	canvas = document.getElementById("canvasID").getContext("2d");
+
+	canvas3d = document.getElementById("canvas3d").getContext("2d");
 
 	// set the canvas size - not working??
 	//canvas.width = MapWidth*TileWidth;
@@ -354,12 +357,12 @@ function castRays()
 		height = 64/dist*277;
 		x5 = x5 + 1;
 
-		canvas.beginPath();
-		canvas.strokeStyle = "blue";
-		canvas.moveTo(x5,100+height/2);
-		canvas.lineTo(x5,100-height/2);
-		canvas.stroke();
-		canvas.closePath();
+		canvas3d.beginPath();
+		canvas3d.strokeStyle = "brown";
+		canvas3d.moveTo(x5,100+height/2);
+		canvas3d.lineTo(x5,100-height/2);
+		canvas3d.stroke();
+		canvas3d.closePath();
 	}
 }
 
@@ -410,6 +413,21 @@ function currentTile(worldX, worldY)
 	return [tileX, tileY];
 }
 
+function drawFloorAndSky()
+{
+	// draw the sky
+	canvas.beginPath();
+	canvas3d.fillStyle = "blue";
+	canvas3d.fillRect(0,0,ScreenWidth,ScreenHeight/2);
+	canvas3d.closePath();
+
+	// draw the floor
+	canvas.beginPath();
+	canvas3d.fillStyle = "yellow";
+	canvas3d.fillRect(0,ScreenHeight/2,ScreenWidth,ScreenHeight);
+	canvas3d.closePath();		
+}
+
 init();
 gameLoop();
 
@@ -417,5 +435,6 @@ function gameLoop()
 {
 	drawMap();
 	drawPlayer();
+	drawFloorAndSky();
 	castRays();
 }
