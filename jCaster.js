@@ -99,6 +99,9 @@ function drawRays()
 // keyboard input
 function keyDown(event)
 {
+	newPlayerX = playerX;
+	newPlayerY = playerY;
+
 	switch(event.keyCode)
 	{
 		// left arrow - rotate player CCW
@@ -108,8 +111,8 @@ function keyDown(event)
 
 		// up arrow - move forward
 		case 38:
-		playerX += moveDistance*Math.sin(playerDir);
-		playerY -= moveDistance*Math.cos(playerDir);
+		newPlayerX += moveDistance*Math.sin(playerDir);
+		newPlayerY -= moveDistance*Math.cos(playerDir);
 		break;
 
 		// right arrow - rotate player CW
@@ -119,9 +122,19 @@ function keyDown(event)
 
 		// down arrow - move back
 		case 40:
-		playerX -= moveDistance*Math.sin(playerDir);
-		playerY += moveDistance*Math.cos(playerDir);
+		newPlayerX -= moveDistance*Math.sin(playerDir);
+		newPlayerY += moveDistance*Math.cos(playerDir);
 		break;
+	}
+
+	// check for collision
+	collision = checkTile(newPlayerX, newPlayerY);
+
+	if(collision == 0)
+	{
+		// no collision detected - move the player
+		playerX = newPlayerX;
+		playerY = newPlayerY;
 	}
 }
 
