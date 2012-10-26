@@ -214,12 +214,12 @@ function castRayY(angle)
 		}
 	}
 
-	canvas.beginPath();
-	canvas.strokeStyle = "green";
-	canvas.moveTo(playerX,playerY);
-	canvas.lineTo(x,y);
-	canvas.stroke();
-	canvas.closePath();
+	// canvas.beginPath();
+	// canvas.strokeStyle = "green";
+	// canvas.moveTo(playerX,playerY);
+	// canvas.lineTo(x,y);
+	// canvas.stroke();
+	// canvas.closePath();
 
 	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
 
@@ -316,11 +316,11 @@ function castRays()
 	// canvas.lineTo(playerX + x, playerY - y);
 	// canvas.stroke();
 	// canvas.closePath();
-	i = playerDir;
-	if(1)//for(var i=(playerDir-FOV/2); i < (playerDir+FOV/2); i = i + (Math.PI/360))
+	
+	for(var i=(playerDir-FOV/2); i < (playerDir+FOV/2); i = i + (Math.PI/360))
 	{
 		// cast the rays
-		var distX = 0;//castRayX(i);
+		var distX = castRayX(i);
 		var distY = castRayY(i);
 
 		//console.log(distX + " - " + distY );
@@ -333,12 +333,12 @@ function castRays()
 		x = dist*Math.sin(i);
 		y = dist*Math.cos(i);
 
-		// canvas.beginPath();
-		// canvas.strokeStyle = "white";
-		// canvas.moveTo(playerX,playerY);
-		// canvas.lineTo(playerX + x, playerY - y);
-		// canvas.stroke();
-		// canvas.closePath();
+		canvas.beginPath();
+		canvas.strokeStyle = "white";
+		canvas.moveTo(playerX,playerY);
+		canvas.lineTo(playerX + x, playerY - y);
+		canvas.stroke();
+		canvas.closePath();
 	}
 }
 
