@@ -146,24 +146,19 @@ function castRayY(angle)
 	y = 0.0;
 	deltay = 0.0;
 
-	currentTileX = Math.floor(playerX/TileWidth) + 1;
-	currentTileY = Math.floor(playerY/TileHeight) + 1;
+	c = currentTile(playerX, playerY);
+
+	currentTileX = c[0];
 
 	// compute the first Y intercept
 	if(playerDir > Math.PI/2 && angle < Math.PI)
 	{
 		// 2nd quadrant
-		x = currentTileX*TileHeight;
+		x = currentTileX*TileHeight + TileHeight;
 		// get the corresponding y coord
 		deltay = (x-playerX)*Math.tan(Math.PI/2 + angle);
 		y = playerY + deltay;
-		
-		while(checkTile(x,y) == 0)
-		{	
-			// compute the next Y intercept 
-			y += deltay;
-			x += TileWidth;
-		}
+		y1 = y;
 
 		canvas.beginPath();
 		canvas.strokeStyle = "black";
@@ -171,6 +166,37 @@ function castRayY(angle)
 		canvas.lineTo(x,y);
 		canvas.stroke();
 		canvas.closePath();
+
+		if(checkTile(x,y) == 0)
+		{
+			// compute the next intercept
+			x += TileWidth;
+			y = playerY + (x-playerX)*Math.tan(Math.PI/2 + angle);
+			y2 = y;
+
+			canvas.beginPath();
+			canvas.strokeStyle = "green";
+			canvas.moveTo(playerX,playerY);
+			canvas.lineTo(x,y);
+			canvas.stroke();
+			canvas.closePath();
+
+			while(checkTile(x,y) == 0)
+			{
+				deltay = y2 - y1;
+
+				// compute the next intercept
+				x += TileWidth;
+				y += deltay; 
+
+				canvas.beginPath();
+				canvas.strokeStyle = "pink";
+				canvas.moveTo(playerX,playerY);
+				canvas.lineTo(x,y);
+				canvas.stroke();
+				canvas.closePath();
+			}
+		}
 	}
 
 	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
@@ -187,7 +213,7 @@ function castRayX(angle)
 	currentTileX = Math.floor(playerX/TileWidth) + 1;
 	currentTileY = Math.floor(playerY/TileHeight) + 1;
 
-	console.log("Angle " + angle*180.0/Math.PI);
+	//console.log("Angle " + angle*180.0/Math.PI);
 
 	// compute the first X intercept
 	if(playerDir > Math.PI/2 && angle < Math.PI)
@@ -222,18 +248,9 @@ function castRays()
 {
 	printMsg("angle = " + playerDir*(180/Math.PI));
 
-	var distX = castRayX(playerDir);
-	var distY = castRayY(playerDir);
-
-	console.log(distX + " - " + distY );
-
-	var dist = Math.min(distX,distY);
-
-	//console.log(dist);
-
-	// draw the ray
-	x = dist*Math.sin(playerDir);
-	y = dist*Math.cos(playerDir);
+	// draw the direction of the player
+	x = 300*Math.sin(playerDir);
+	y = 300*Math.cos(playerDir);
 
 	canvas.beginPath();
 	canvas.strokeStyle = "white";
@@ -241,6 +258,27 @@ function castRays()
 	canvas.lineTo(playerX + x, playerY - y);
 	canvas.stroke();
 	canvas.closePath();
+
+	// cast the rays
+	var distX = castRayX(playerDir);
+	var distY = castRayY(playerDir);
+
+	//console.log(distX + " - " + distY );
+
+	var dist = Math.min(distX,distY);
+
+	//console.log(dist);
+
+	// draw the ray
+	// x = dist*Math.sin(playerDir);
+	// y = dist*Math.cos(playerDir);
+
+	// canvas.beginPath();
+	// canvas.strokeStyle = "white";
+	// canvas.moveTo(playerX,playerY);
+	// canvas.lineTo(playerX + x, playerY - y);
+	// canvas.stroke();
+	// canvas.closePath();
 }
 
 function printMsg(msg)
@@ -256,14 +294,25 @@ function printMsg(msg)
 // Checks if there is a tile at the current world x,y position
 function checkTile(worldX, worldY)
 {
-	tileX = Math.floor(worldX/TileWidth);
-	tileY = Math.floor(worldY/TileHeight);
+	tile = currentTile(worldX, worldY);
+
+	tileX = tile[0];
+	tileY = tile[1];
 
 	content = map[(tileY*MapHeight) + tileX];
 
 	//printMsg("Tile x: " + tileX + " Tile y: " + tileY + " Content: " + content);
 
 	return content;
+}
+
+// Returns the map x,y for the given world x,y
+function currentTile(worldX, worldY)
+{
+	tileX = Math.floor(worldX/TileWidth);
+	tileY = Math.floor(worldY/TileHeight);
+
+	return [tileX, tileY];
 }
 
 init();
