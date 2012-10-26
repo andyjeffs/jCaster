@@ -360,7 +360,20 @@ function checkTile(worldX, worldY)
 	tileX = tile[0];
 	tileY = tile[1];
 
-	content = map[(tileY*MapHeight) + tileX];
+	content = 0;
+
+	if(tileX >= 0 && tileX < MapWidth)
+	{
+		if(tileY >= 0 && tileY < MapHeight)
+		{
+			content = map[(tileY*MapHeight) + tileX];
+		}
+	}
+	else
+	{
+		// out of bounds - return a hit
+		content = 1;
+	}
 
 	//printMsg("Tile x: " + tileX + " Tile y: " + tileY + " Content: " + content);
 
