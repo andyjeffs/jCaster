@@ -170,14 +170,14 @@ function castRayY(angle)
 		y = playerY + deltay;
 		y1 = y;
 
-		if(checkTile(x,y) == 0)
+		if((checkTile(x,y) == 0) && (checkTile(x - TileWidth,y) == 0))
 		{
 			// compute the next intercept
 			x += TileWidth;
 			y = playerY + (x-playerX)*Math.tan(Math.PI/2 + angle);
 			y2 = y;
 
-			while(checkTile(x,y) == 0)
+			while((checkTile(x,y) == 0) && (checkTile(x - TileWidth,y) == 0))
 			{
 				deltay = y2 - y1;
 
@@ -196,14 +196,14 @@ function castRayY(angle)
 		y = playerY + deltay;
 		y1 = y;
 
-		if(checkTile(x - TileWidth,y) == 0)
+		if((checkTile(x,y) == 0) && (checkTile(x - TileWidth,y) == 0))
 		{
 			// compute the next intercept
 			x -= TileWidth;
 			y = playerY + (x-playerX)*Math.tan(Math.PI/2 + angle);
 			y2 = y;
 
-			while(checkTile(x - TileWidth,y) == 0)
+			while((checkTile(x,y) == 0) && (checkTile(x - TileWidth,y) == 0))
 			{
 				deltay = y2 - y1;
 
@@ -246,14 +246,14 @@ function castRayX(angle)
 		x = playerX + deltax;
 		x1 = x;
 
-		if(checkTile(x,y) == 0)
+		if((checkTile(x,y) == 0) && (checkTile(x,y - TileHeight) == 0))
 		{
 			// compute the next intercept
 			y += TileHeight;
 			x = playerX + (y-playerY)/Math.tan(angle - Math.PI/2);
 			x2 = x;
 
-			while(checkTile(x,y) == 0)
+			while((checkTile(x,y) == 0) && (checkTile(x,y - TileHeight) == 0))
 			{
 				deltax = x2 - x1;
 
@@ -272,14 +272,14 @@ function castRayX(angle)
 		x = playerX + deltax;
 		x1 = x;
 
-		if(checkTile(x,y - TileHeight) == 0)
+		if((checkTile(x,y) == 0) && (checkTile(x,y - TileHeight) == 0))
 		{
 			// compute the next intercept
 			y -= TileHeight;
 			x = playerX + (y-playerY)/Math.tan(angle - Math.PI/2);
 			x2 = x;
 
-			while(checkTile(x,y - TileHeight) == 0)
+			while((checkTile(x,y) == 0) && (checkTile(x,y - TileHeight) == 0))
 			{
 				deltax = x2 - x1;
 
