@@ -9,8 +9,8 @@ var MapHeight = 10;
 var TileWidth = 64;
 var TileHeight = 64;
 
-var ScreenWidth = 320;
-var ScreenHeight = 200;
+var ScreenWidth = 640;
+var ScreenHeight = 400;
 
 var FOV = Math.PI/3; // field of view of the player
 
@@ -36,7 +36,13 @@ var playerY = 200;
 var playerDir = Math.PI/3 + Math.PI/2;//2*Math.PI/3; // direction the player is looking in (degrees)
 
 var rotationAmount = Math.PI/180*5; // amount to rotate player (CW or CCW)
-var moveDistance = 5;	  // amount to move the player (forward or backward)
+var moveDistance = 3;	  // amount to move the player (forward or backward)
+
+// keyboard
+var keyUp = false;
+var keyDown = false;
+var keyLeft = false;
+var keyRight = false;
 
 function init()
 {
@@ -51,7 +57,8 @@ function init()
 
 	setInterval(gameLoop,1000/FPS);
 
-	window.addEventListener('keydown', keyDown);
+	window.addEventListener('keydown', keyDownEvent);
+	window.addEventListener('keyup', keyUpEvent);
 }
 
 // draws the 2d to down world map
@@ -107,44 +114,43 @@ function drawRays()
 }
 
 // keyboard input
-function keyDown(event)
+function processKeyboard()
 {
 	newPlayerX = playerX;
 	newPlayerY = playerY;
 
-	switch(event.keyCode)
+	if(keyLeft)
 	{
 		// left arrow - rotate player CCW
-		case 37:
 		playerDir-= rotationAmount;
 
 		if(playerDir < 0)
 		{
 			playerDir = playerDir + 2*Math.PI;
 		}
-		break;
-
-		// up arrow - move forward
-		case 38:
-		newPlayerX += moveDistance*Math.sin(playerDir);
-		newPlayerY -= moveDistance*Math.cos(playerDir);
-		break;
-
+	}
+	else if(keyRight)
+	{
 		// right arrow - rotate player CW
-		case 39:
 		playerDir+=rotationAmount;
 
 		if(playerDir > 2*Math.PI)
 		{
 			playerDir = playerDir - 2*Math.PI;
 		}
-		break;
+	}
 
+	if(keyUp)
+	{
+		// up arrow - move forward
+		newPlayerX += moveDistance*Math.sin(playerDir);
+		newPlayerY -= moveDistance*Math.cos(playerDir);
+	}
+	else if(keyDown)
+	{
 		// down arrow - move back
-		case 40:
 		newPlayerX -= moveDistance*Math.sin(playerDir);
 		newPlayerY += moveDistance*Math.cos(playerDir);
-		break;
 	}
 
 	// check for collision
@@ -155,6 +161,58 @@ function keyDown(event)
 		// no collision detected - move the player
 		playerX = newPlayerX;
 		playerY = newPlayerY;
+	}
+}
+
+function keyDownEvent(event)
+{
+	switch(event.keyCode)
+	{
+		// left arrow
+		case 37:
+		keyLeft = true;
+		break;
+
+		// up arrow
+		case 38:
+		keyUp = true;
+		break;
+
+		// right arrow
+		case 39:
+		keyRight = true;
+		break;
+
+		// down arrow
+		case 40:
+		keyDown = true;
+		break;
+	}
+}
+
+function keyUpEvent(event)
+{
+	switch(event.keyCode)
+	{
+		// left arrow
+		case 37:
+		keyLeft = false;
+		break;
+
+		// up arrow
+		case 38:
+		keyUp = false;
+		break;
+
+		// right arrow
+		case 39:
+		keyRight = false;
+		break;
+
+		// down arrow
+		case 40:
+		keyDown = false;
+		break;
 	}
 }
 
@@ -445,6 +503,7 @@ function gameLoop()
 {
 	//drawMap();
 	//drawPlayer();
+	processKeyboard();
 	drawFloorAndSky();
 	castRays();
 }
