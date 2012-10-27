@@ -57,7 +57,7 @@ function init()
 // draws the 2d to down world map
 function drawMap()
 {
-	canvas.beginPath();
+	//canvas.beginPath();
 	// draw the 2d world map
 	for(var y=0; y < MapHeight; y++)
 	{
@@ -76,16 +76,16 @@ function drawMap()
 			canvas.strokeRect(x*TileWidth,y*TileHeight,TileWidth,TileHeight);
 		}
 	}
-	canvas.closePath();	
+	//canvas.closePath();	
 }
 
 // draws the player on the map
 function drawPlayer()
 {
-	canvas.beginPath();
+	//canvas.beginPath();
 	canvas.arc(playerX,playerY,5,0,2*Math.PI);
 	canvas.fill();
-	canvas.closePath();
+	//canvas.closePath();
 }
 
 // draw rays out from player
@@ -340,41 +340,50 @@ function castRays()
 
 		var dist = Math.min(distX,distY);
 
+		if(distX > distY)
+		{
+			color = '#00FF00';
+		}
+		else
+		{
+			color = '#008800';
+		}
+
 		//console.log(dist);
 
 		// draw the ray
 		x = dist*Math.sin(i);
 		y = dist*Math.cos(i);
 
-		canvas.beginPath();
-		canvas.strokeStyle = "white";
-		canvas.moveTo(playerX,playerY);
-		canvas.lineTo(playerX + x, playerY - y);
-		canvas.stroke();
-		canvas.closePath();
+		//canvas.beginPath();
+		// canvas.strokeStyle = "white";
+		// canvas.moveTo(playerX,playerY);
+		// canvas.lineTo(playerX + x, playerY - y);
+		// canvas.stroke();
+		//canvas.closePath();
 
 		dist = dist*Math.cos(FOVCorrect);
 
 		height = 64/dist*277;
 		x5 = x5 + 1;
 
+		canvas3d.strokeStyle = color;
 		canvas3d.beginPath();
-		canvas3d.strokeStyle = "brown";
 		canvas3d.moveTo(x5,ScreenHeight/2-height/2);
 		canvas3d.lineTo(x5,ScreenHeight/2+height/2);
-		canvas3d.stroke();
 		canvas3d.closePath();
+		canvas3d.stroke();
 	}
 }
 
 function printMsg(msg)
 {
 	// print the player view direction
-	canvas.beginPath();
+	//canvas.beginPath();
 	canvas.font = "14px Arial";
 	canvas.fillStyle = "black";
 	canvas.fillText(msg,20,20);
-	canvas.closePath();
+	//canvas.closePath();
 }
 
 // Checks if there is a tile at the current world x,y position
@@ -417,16 +426,16 @@ function currentTile(worldX, worldY)
 function drawFloorAndSky()
 {
 	// draw the sky
-	canvas3d.beginPath();
+	//canvas3d.beginPath();
 	canvas3d.fillStyle = "blue";
 	canvas3d.fillRect(0,0,ScreenWidth,ScreenHeight/2);
-	canvas3d.closePath();
+	//canvas3d.closePath();
 
 	// draw the floor
-	canvas3d.beginPath();
-	canvas3d.fillStyle = "yellow";
+	//canvas3d.beginPath();
+	canvas3d.fillStyle = "black";
 	canvas3d.fillRect(0,ScreenHeight/2,ScreenWidth,ScreenHeight);
-	canvas3d.closePath();		
+	//canvas3d.closePath();		
 }
 
 init();
@@ -434,8 +443,8 @@ gameLoop();
 
 function gameLoop()
 {
-	drawMap();
-	drawPlayer();
+	//drawMap();
+	//drawPlayer();
 	drawFloorAndSky();
 	castRays();
 }
