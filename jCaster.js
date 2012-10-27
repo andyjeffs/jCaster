@@ -38,7 +38,7 @@ var map = [1,1,1,1,1,1,1,1,1,1,
 // player
 var playerX = 200;
 var playerY = 200;
-var playerDir = Math.PI/3 + Math.PI/2;//2*Math.PI/3; // direction the player is looking in (degrees)
+var playerDir = 0; // direction the player is looking in (degrees)
 
 var rotationAmount = Math.PI/180*5; // amount to rotate player (CW or CCW)
 var moveDistance = 3;	  // amount to move the player (forward or backward)
@@ -69,8 +69,9 @@ function init()
 // draws the 2d to down world map
 function drawMap()
 {
-	//canvas.beginPath();
 	// draw the 2d world map
+	canvas.strokeStyle = "black";
+
 	for(var y=0; y < MapHeight; y++)
 	{
 		for(var x=0; x < MapWidth; x++)
@@ -83,12 +84,12 @@ function drawMap()
 			{
 				canvas.fillStyle = "red";
 			}
+			canvas.beginPath();
 			canvas.fillRect(x*TileWidth,y*TileHeight,TileWidth,TileHeight);
-			canvas.strokeStyle = "black";
 			canvas.strokeRect(x*TileWidth,y*TileHeight,TileWidth,TileHeight);
+			canvas.closePath();	
 		}
-	}
-	//canvas.closePath();	
+	}	
 }
 
 // draws the player on the map
@@ -267,12 +268,12 @@ function castRayY(angle)
 		}
 	}
 
+	// canvas.strokeStyle = "blue";
 	// canvas.beginPath();
-	// canvas.strokeStyle = "green";
 	// canvas.moveTo(playerX,playerY);
 	// canvas.lineTo(x,y);
-	// canvas.stroke();
 	// canvas.closePath();
+	// canvas.stroke();
 
 	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
 
@@ -284,6 +285,7 @@ function castRayX(angle)
 	x = 0.0;
 	y = 0.0;
 	deltax = 0.0;
+	distance = 0.0;
 
 	c = currentTile(playerX, playerY);
 
@@ -319,7 +321,7 @@ function castRayX(angle)
 	else
 	{
 		// 1st or 4th quadrant
-		y = currentTileY*TileHeight - TileHeight;
+		y = currentTileY*TileHeight;
 		// get the corresponding x coord
 		deltax = (y-playerY)/Math.tan(angle - Math.PI/2);
 		x = playerX + deltax;
@@ -343,12 +345,12 @@ function castRayX(angle)
 		}
 	}
 
-	// canvas.beginPath();
 	// canvas.strokeStyle = "blue";
+	// canvas.beginPath();
 	// canvas.moveTo(playerX,playerY);
 	// canvas.lineTo(x,y);
-	// canvas.stroke();
 	// canvas.closePath();
+	// canvas.stroke();
 
 	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
 
@@ -373,8 +375,9 @@ function castRays()
 	var x5=0;
 	var FOVCorrect = -Math.PI/6;
 
-	//for(var i=(playerDir-FOV/2); i < (playerDir+FOV/2); i = i + (Math.PI/360))
 	for(var i=(playerDir-FOV/2); i < (playerDir+FOV/2); i += AngleIncrement)
+	//i = playerDir;
+	//if(1)
 	{
 		FOVCorrect += AngleIncrement;
 		// cast the rays
@@ -488,8 +491,8 @@ gameLoop();
 
 function gameLoop()
 {
-	//drawMap();
-	//drawPlayer();
+	drawMap();
+	drawPlayer();
 	processKeyboard();
 	drawFloorAndSky();
 	castRays();
