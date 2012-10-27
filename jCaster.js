@@ -9,12 +9,17 @@ var MapHeight = 10;
 var TileWidth = 64;
 var TileHeight = 64;
 
+// The 3d height of the tiles
+var TileZ = 64;
+
 var ScreenWidth = 640;
 var ScreenHeight = 400;
 
 var FOV = Math.PI/3; // field of view of the player
 
 var AngleIncrement = FOV/ScreenWidth;
+
+var DistanceToScreen = (ScreenWidth/2)/Math.tan(FOV/2);
 
 var FPS = 30; // frames per second
 
@@ -93,24 +98,6 @@ function drawPlayer()
 	canvas.arc(playerX,playerY,5,0,2*Math.PI);
 	canvas.fill();
 	//canvas.closePath();
-}
-
-// draw rays out from player
-function drawRays()
-{	
-	l = 1000;
-
-	canvas.strokeStyle = "blue";
-	for(var i=(playerDir-FOV/2); i < (playerDir+FOV/2); i = i + (Math.PI/360))
-	{
-		canvas.moveTo(playerX,playerY);
-		
-		x = l*Math.sin(i);
-		y = l*Math.cos(i);
-	
-		canvas.lineTo(playerX + x, playerY - y);
-		canvas.stroke();
-	}
 }
 
 // keyboard input
@@ -422,7 +409,7 @@ function castRays()
 
 		dist = dist*Math.cos(FOVCorrect);
 
-		height = 64/dist*277;
+		height = TileZ/dist*DistanceToScreen;
 		x5 = x5 + 1;
 
 		canvas3d.strokeStyle = color;
