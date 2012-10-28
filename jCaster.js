@@ -214,6 +214,8 @@ function castRayY(angle)
 
 	currentTileX = c[0];
 
+	var loopCount = 0;
+
 	// compute the first Y intercept
 	if(angle > 0 && angle < Math.PI)
 	{
@@ -245,8 +247,16 @@ function castRayY(angle)
 	{
 		// 3rd or 4th quadrant
 		x = currentTileX*TileWidth;// - TileWidth;
+		if(x < 0)
+		{
+			x = 0;
+		}
+
 		// get the corresponding y coord
-		deltay = (x-playerX)*Math.tan(Math.PI/2 + angle);
+		//deltay = (x-playerX)*Math.tan(Math.PI/2 + angle);
+		factor = Math.tan(Math.PI/2 + angle);
+		xx = x - playerX;
+		deltay = factor*xx;
 		y = playerY + deltay;
 		y1 = y;
 
@@ -258,6 +268,10 @@ function castRayY(angle)
 		{
 			// compute the next intercept
 			x -= TileWidth;
+					if(x < 0)
+		{
+			x = 0;
+		}
 			y = playerY + (x-playerX)*Math.tan(Math.PI/2 + angle);
 			y2 = y;
 
@@ -267,9 +281,22 @@ function castRayY(angle)
 
 				// compute the next intercept
 				x -= TileWidth;
+						if(x < 0)
+		{
+			x = 0;
+		}
 				y += deltay; 
+
+				loopCount++;
 			}
 		}
+	}
+	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
+	if(y < 0 || y > 640)
+	{
+		y = 0;
+		x = 0;
+		dist = 10000;
 	}
 
 	// canvas.strokeStyle = "blue";
@@ -279,7 +306,7 @@ function castRayY(angle)
 	// canvas.closePath();
 	// canvas.stroke();
 
-	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
+
 
 	return distance;
 }
@@ -357,7 +384,16 @@ function castRayX(angle)
 	// canvas.closePath();
 	// canvas.stroke();
 
+
+
 	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
+
+		if(x < 0 || x > 640)
+	{
+		y = 0;
+		x = 0;
+		dist = 100000;
+	}
 
 	return distance;
 }
@@ -367,8 +403,8 @@ function castRays()
 	//printMsg("angle = " + playerDir*(180/Math.PI));
 
 	// draw the direction of the player
-	x = 300*Math.sin(playerDir);
-	y = 300*Math.cos(playerDir);
+	// x = 300*Math.sin(playerDir);
+	// y = 300*Math.cos(playerDir);
 
 	// canvas.beginPath();
 	// canvas.strokeStyle = "white";
