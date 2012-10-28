@@ -40,7 +40,7 @@ var playerX = 200;
 var playerY = 200;
 var playerDir = 0; // direction the player is looking in (degrees)
 
-var rotationAmount = Math.PI/180*5; // amount to rotate player (CW or CCW)
+var rotationAmount = Math.PI/180*3; // amount to rotate player (CW or CCW)
 var moveDistance = 3;	  // amount to move the player (forward or backward)
 
 // keyboard
@@ -244,11 +244,15 @@ function castRayY(angle)
 	else
 	{
 		// 3rd or 4th quadrant
-		x = currentTileX*TileWidth - TileWidth;
+		x = currentTileX*TileWidth;// - TileWidth;
 		// get the corresponding y coord
 		deltay = (x-playerX)*Math.tan(Math.PI/2 + angle);
 		y = playerY + deltay;
 		y1 = y;
+
+		// a = currentTile(x,y);
+		// content = checkTile(x,y);
+		// printMsg("Tile x: " + a[0] + " Tile y: " + a[1] + " Content: " + content);
 
 		if((checkTile(x,y) == 0) && (checkTile(x - TileWidth,y) == 0))
 		{
@@ -268,12 +272,12 @@ function castRayY(angle)
 		}
 	}
 
-	// canvas.strokeStyle = "blue";
-	// canvas.beginPath();
-	// canvas.moveTo(playerX,playerY);
-	// canvas.lineTo(x,y);
-	// canvas.closePath();
-	// canvas.stroke();
+	canvas.strokeStyle = "blue";
+	canvas.beginPath();
+	canvas.moveTo(playerX,playerY);
+	canvas.lineTo(x,y);
+	canvas.closePath();
+	canvas.stroke();
 
 	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
 
@@ -384,6 +388,8 @@ function castRays()
 		var distX = castRayX(i);
 		var distY = castRayY(i);
 
+		//printMsg("distY = " + distY);
+
 		//console.log(distX + " - " + distY );
 
 		var dist = Math.min(distX,distY);
@@ -403,12 +409,12 @@ function castRays()
 		x = dist*Math.sin(i);
 		y = dist*Math.cos(i);
 
-		//canvas.beginPath();
 		// canvas.strokeStyle = "white";
+		// canvas.beginPath();
 		// canvas.moveTo(playerX,playerY);
 		// canvas.lineTo(playerX + x, playerY - y);
+		// canvas.closePath();
 		// canvas.stroke();
-		//canvas.closePath();
 
 		dist = dist*Math.cos(FOVCorrect);
 
