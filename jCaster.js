@@ -385,6 +385,7 @@ function castRays()
 	{
 		FOVCorrect += AngleIncrement;
 		// cast the rays
+		i=i+0.000001;
 		var distX = castRayX(i);
 		var distY = castRayY(i);
 
