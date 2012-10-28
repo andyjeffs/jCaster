@@ -272,12 +272,12 @@ function castRayY(angle)
 		}
 	}
 
-	canvas.strokeStyle = "blue";
-	canvas.beginPath();
-	canvas.moveTo(playerX,playerY);
-	canvas.lineTo(x,y);
-	canvas.closePath();
-	canvas.stroke();
+	// canvas.strokeStyle = "blue";
+	// canvas.beginPath();
+	// canvas.moveTo(playerX,playerY);
+	// canvas.lineTo(x,y);
+	// canvas.closePath();
+	// canvas.stroke();
 
 	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
 
@@ -409,12 +409,12 @@ function castRays()
 		x = dist*Math.sin(i);
 		y = dist*Math.cos(i);
 
-		// canvas.strokeStyle = "white";
-		// canvas.beginPath();
-		// canvas.moveTo(playerX,playerY);
-		// canvas.lineTo(playerX + x, playerY - y);
-		// canvas.closePath();
-		// canvas.stroke();
+		canvas.strokeStyle = "white";
+		canvas.beginPath();
+		canvas.moveTo(playerX,playerY);
+		canvas.lineTo(playerX + x, playerY - y);
+		canvas.closePath();
+		canvas.stroke();
 
 		dist = dist*Math.cos(FOVCorrect);
 
