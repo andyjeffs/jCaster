@@ -215,7 +215,7 @@ function castRayY(angle)
 	currentTileX = c[0];
 
 	// compute the first Y intercept
-	if(playerDir > 0 && angle < Math.PI)
+	if(angle > 0 && angle < Math.PI)
 	{
 		// 1st or 2nd quadrant
 		x = currentTileX*TileWidth + TileWidth;
@@ -296,12 +296,13 @@ function castRayX(angle)
 	currentTileY = c[1];
 
 	// compute the first X intercept
-	if(playerDir > Math.PI/2 && angle < 3*Math.PI/2)
+	if(angle > Math.PI/2 && angle < 3*Math.PI/2)
 	{
 		// 2nd or 3rd quadrant
 		y = currentTileY*TileHeight + TileHeight;
 		// get the corresponding x coord
 		deltax = (y-playerY)/Math.tan(angle - Math.PI/2);
+
 		x = playerX + deltax;
 		x1 = x;
 
@@ -403,8 +404,6 @@ function castRays()
 		{
 			color = '#008800';
 		}
-
-		//console.log(dist);
 
 		// draw the ray
 		x = dist*Math.sin(i);
