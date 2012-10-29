@@ -7,7 +7,7 @@ var canvas3d = null;
 var img = null;
 var img1 = null;
 
-var EnableTextureMapping = 0;
+var EnableTextureMapping = 1;
 
 // world constants
 var MapWidth = 10;
@@ -222,10 +222,7 @@ function castRayY(angle)
 	y = 0.0;
 
 	c = currentTile(playerX, playerY);
-
 	currentTileX = c[0];
-
-	var loopCount = 0;
 
 	var cosAlpha = Math.cos(Math.PI/2 + angle);
 	var sinAlpha = Math.sin(Math.PI/2 + angle);
@@ -248,8 +245,7 @@ function castRayY(angle)
 
 	y = slope*(playerX - x) + playerY;
 
-	// 1st or 2nd quadrant
-	while(checkTile(x,y) == 0)
+	while(checkTile(x + dir*1,y) == 0)
 	{
 		x = x + dir*TileWidth;
 		y = slope*(playerX - x) + playerY;
@@ -513,10 +509,7 @@ function gameLoop()
 	drawMap();
 	//drawPlayer();
 	processKeyboard();
-	//drawFloorAndSky();
+	drawFloorAndSky();
 	castRays();
 	printMsg("angle = " + playerDir*(180/Math.PI));
-
-	//canvas.drawImage(img, 0, 0);
-	//canvas.drawImage(img,0,0,1,64,0,0,1,64);
 }
