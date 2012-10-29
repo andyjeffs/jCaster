@@ -7,7 +7,7 @@ var canvas3d = null;
 var img = null;
 var img1 = null;
 
-var EnableTextureMapping = 1;
+var EnableTextureMapping = 0;
 
 // world constants
 var MapWidth = 10;
@@ -88,13 +88,13 @@ function drawMap()
 	{
 		for(var x=0; x < MapWidth; x++)
 		{
-			if(map[(y*MapHeight) + x] == 1)
+			if(map[(y*MapHeight) + x] == 0)
 			{
-				canvas.fillStyle = "lime";
+				canvas.fillStyle = "red";
 			}
 			else
 			{
-				canvas.fillStyle = "red";
+				canvas.fillStyle = "lime";
 			}
 			canvas.beginPath();
 			canvas.fillRect(x*TileWidth,y*TileHeight,TileWidth,TileHeight);
@@ -220,7 +220,6 @@ function castRayY(angle)
 {
 	x = 0.0;
 	y = 0.0;
-	deltay = 0.0;
 
 	c = currentTile(playerX, playerY);
 
@@ -228,78 +227,42 @@ function castRayY(angle)
 
 	var loopCount = 0;
 
-	// compute the first Y intercept
-	if(angle > 0 && angle < Math.PI)
+	var cosAlpha = Math.cos(Math.PI/2 + angle);
+	var sinAlpha = Math.sin(Math.PI/2 + angle);
+
+	var slope = -1*sinAlpha/cosAlpha;
+	var dir = 1;
+
+	if(angle >= 0 && angle < Math.PI)
 	{
 		// 1st or 2nd quadrant
+		dir = 1; // ray going right
 		x = currentTileX*TileWidth + TileWidth;
-		// get the corresponding y coord
-		deltay = (x-playerX)*Math.tan(Math.PI/2 + angle);
-		y = playerY + deltay;
-		y1 = y;
-
-		if((checkTile(x,y) == 0) && (checkTile(x - TileWidth,y) == 0))
-		{
-			// compute the next intercept
-			x += TileWidth;
-			y = playerY + (x-playerX)*Math.tan(Math.PI/2 + angle);
-			y2 = y;
-
-			while((checkTile(x,y) == 0) && (checkTile(x - TileWidth,y) == 0))
-			{
-				deltay = y2 - y1;
-
-				// compute the next intercept
-				x += TileWidth;
-				y += deltay; 
-			}
-		}
 	}
 	else
 	{
-		// 3rd or 4th quadrant
-		x = currentTileX*TileWidth;// - TileWidth;
-
-		// get the corresponding y coord
-		deltay = (x-playerX)*Math.tan(Math.PI/2 + angle);
-		y = playerY + deltay;
-		y1 = y;
-
-		if((checkTile(x,y) == 0) && (checkTile(x - TileWidth,y) == 0))
-		{
-			// compute the next intercept
-			x -= TileWidth;
-			y = playerY + (x-playerX)*Math.tan(Math.PI/2 + angle);
-			y2 = y;
-
-			while((checkTile(x,y) == 0) && (checkTile(x - TileWidth,y) == 0))
-			{
-				deltay = y2 - y1;
-
-				// compute the next intercept
-				x -= TileWidth;
-				y += deltay; 
-
-				loopCount++;
-			}
-		}
+		// // 3rd or 4th quadrant
+		dir = -1; // ray going left
+		x = currentTileX*TileWidth;
 	}
-	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
-	
-	if(y < 0 || y > 640)
+
+	y = slope*(playerX - x) + playerY;
+
+	// 1st or 2nd quadrant
+	while(checkTile(x,y) == 0)
 	{
-		y = 0;
-		x = 0;
-		dist = 10000;
+		x = x + dir*TileWidth;
+		y = slope*(playerX - x) + playerY;
 	}
 
-	// canvas.strokeStyle = "blue";
-	// canvas.beginPath();
-	// canvas.moveTo(playerX,playerY);
-	// canvas.lineTo(x,y);
-	// canvas.closePath();
-	// canvas.stroke();
+	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
 
+	canvas.strokeStyle = "blue";
+	canvas.beginPath();
+	canvas.moveTo(playerX,playerY);
+	canvas.lineTo(x,y);
+	canvas.closePath();
+	canvas.stroke();
 
 	return [distance,Math.floor(y)%TileHeight,checkTile(x,y)];
 }
@@ -408,8 +371,9 @@ function castRays()
 	
 	var x5=0;
 	var FOVCorrect = -Math.PI/6;
+	var i = 0;
 
-	for(var i=(playerDir-FOV/2); i < (playerDir+FOV/2); i += AngleIncrement)
+	for(i = playerDir-FOV/2; i < (playerDir+FOV/2); i += AngleIncrement)
 	//i = playerDir;
 	//if(1)
 	{
@@ -467,12 +431,12 @@ function castRays()
 		}
 		else
 		{
-			canvas3d.strokeStyle = color;
-			canvas3d.beginPath();
-			canvas3d.moveTo(x5,ScreenHeight/2-height/2);
-			canvas3d.lineTo(x5,ScreenHeight/2+height/2);
-			canvas3d.closePath();
-			canvas3d.stroke();
+			// canvas3d.strokeStyle = color;
+			// canvas3d.beginPath();
+			// canvas3d.moveTo(x5,ScreenHeight/2-height/2);
+			// canvas3d.lineTo(x5,ScreenHeight/2+height/2);
+			// canvas3d.closePath();
+			// canvas3d.stroke();
 		}
 		
 		x5 = x5 + 1;
@@ -546,11 +510,12 @@ gameLoop();
 
 function gameLoop()
 {
-	//drawMap();
+	drawMap();
 	//drawPlayer();
 	processKeyboard();
-	drawFloorAndSky();
+	//drawFloorAndSky();
 	castRays();
+	printMsg("angle = " + playerDir*(180/Math.PI));
 
 	//canvas.drawImage(img, 0, 0);
 	//canvas.drawImage(img,0,0,1,64,0,0,1,64);
