@@ -216,10 +216,12 @@ function keyUpEvent(event)
 	}
 }
 
+// find the Y intercept
 function castRayY(angle)
 {
 	var x = 0.0;
 	var y = 0.0;
+	var distance = 0.0;
 
 	var c = currentTile(playerX, playerY);
 	var currentTileX = c[0];
@@ -251,83 +253,7 @@ function castRayY(angle)
 		y = slope*(playerX - x) + playerY;
 	}
 
-	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
-
-	canvas.strokeStyle = "blue";
-	canvas.beginPath();
-	canvas.moveTo(playerX,playerY);
-	canvas.lineTo(x,y);
-	canvas.closePath();
-	canvas.stroke();
-
-	return [distance,Math.floor(y)%TileHeight,checkTile(x,y)];
-}
-
-function castRayX(angle)
-{
-	x = 0.0;
-	y = 0.0;
-	deltax = 0.0;
-	distance = 0.0;
-
-	c = currentTile(playerX, playerY);
-
-	currentTileY = c[1];
-
-	// compute the first X intercept
-	if(angle > Math.PI/2 && angle < 3*Math.PI/2)
-	{
-		// 2nd or 3rd quadrant
-		y = currentTileY*TileHeight + TileHeight;
-		// get the corresponding x coord
-		deltax = (y-playerY)/Math.tan(angle - Math.PI/2);
-
-		x = playerX + deltax;
-		x1 = x;
-
-		if((checkTile(x,y) == 0) && (checkTile(x,y - TileHeight) == 0))
-		{
-			// compute the next intercept
-			y += TileHeight;
-			x = playerX + (y-playerY)/Math.tan(angle - Math.PI/2);
-			x2 = x;
-
-			while((checkTile(x,y) == 0) && (checkTile(x,y - TileHeight) == 0))
-			{
-				deltax = x2 - x1;
-
-				// compute the next intercept
-				x += deltax;
-				y += TileHeight;
-			}
-		}
-	}
-	else
-	{
-		// 1st or 4th quadrant
-		y = currentTileY*TileHeight;
-		// get the corresponding x coord
-		deltax = (y-playerY)/Math.tan(angle - Math.PI/2);
-		x = playerX + deltax;
-		x1 = x;
-
-		if((checkTile(x,y) == 0) && (checkTile(x,y - TileHeight) == 0))
-		{
-			// compute the next intercept
-			y -= TileHeight;
-			x = playerX + (y-playerY)/Math.tan(angle - Math.PI/2);
-			x2 = x;
-
-			while((checkTile(x,y) == 0) && (checkTile(x,y - TileHeight) == 0))
-			{
-				deltax = x2 - x1;
-
-				// compute the next intercept
-				x += deltax;
-				y -= TileHeight;
-			}
-		}
-	}
+	distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
 
 	// canvas.strokeStyle = "blue";
 	// canvas.beginPath();
@@ -336,16 +262,54 @@ function castRayX(angle)
 	// canvas.closePath();
 	// canvas.stroke();
 
+	return [distance,Math.floor(y)%TileHeight,checkTile(x,y)];
+}
 
+// find the X intercept
+function castRayX(angle)
+{
+	var x = 0.0;
+	var y = 0.0;
+	var distance = 0.0;
 
-	var distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
+	var c = currentTile(playerX, playerY);
+	var currentTileY = c[1];
 
-		if(x < 0 || x > 640)
+	var cosAlpha = Math.cos(Math.PI/2 + angle);
+	var sinAlpha = Math.sin(Math.PI/2 + angle);
+
+	var slope = -1*sinAlpha/cosAlpha;
+	var dir = 1;
+
+	if(angle > Math.PI/2 && angle < 3*Math.PI/2)
 	{
-		y = 0;
-		x = 0;
-		dist = 100000;
+		// 2nd or 3rd quadrant
+		y = currentTileY*TileHeight + TileHeight;
+		dir = 1; // ray going down	
 	}
+	else
+	{
+		// 1st or 4th quadrant
+		y = currentTileY*TileHeight;
+		dir = -1; // ray going up
+	}
+
+	x = (playerY - y)/slope + playerX;
+
+	while(checkTile(x,y + dir*1) == 0)
+	{
+		y = y + dir*TileHeight;
+		x = (playerY - y)/slope + playerX;
+	}
+
+	distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
+
+	canvas.strokeStyle = "blue";
+	canvas.beginPath();
+	canvas.moveTo(playerX,playerY);
+	canvas.lineTo(x,y);
+	canvas.closePath();
+	canvas.stroke();
 
 	return [distance,Math.floor(x)%TileWidth,checkTile(x,y)];
 }
