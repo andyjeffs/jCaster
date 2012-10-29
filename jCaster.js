@@ -226,17 +226,6 @@ function castRayY(angle)
 	var c = currentTile(playerX, playerY);
 	var currentTileX = c[0];
 
-// make sure the angle is between 0 and 360 degrees
-		if(angle < 0)
-		{
-			angle = angle + Math.PI*2		
-		}
-		else if(angle > Math.PI*2)
-		{
-			angle = angle - Math.PI*2;
-		}
-		
-
 	var cosAlpha = Math.cos(Math.PI/2 + angle);
 	var sinAlpha = Math.sin(Math.PI/2 + angle);
 
@@ -333,10 +322,22 @@ function castRays()
 	// cast the rays
 	for(var i = playerDir-FOV/2; i < (playerDir+FOV/2); i += AngleIncrement)
 	{
+		// make sure the angle is between 0 and 360 degrees
+		angle = i;
+
+		if(angle < 0)
+		{
+			angle = angle + Math.PI*2		
+		}
+		else if(angle > Math.PI*2)
+		{
+			angle = angle - Math.PI*2;
+		}
+
 		FOVCorrect += AngleIncrement;
 
-		var a = castRayX(i);
-		var b = castRayY(i);
+		var a = castRayX(angle);
+		var b = castRayY(angle);
 
 		var distX = a[0];
 		var distY = b[0];
@@ -360,8 +361,8 @@ function castRays()
 		}
 
 		// draw the ray
-		// x = dist*Math.sin(i);
-		// y = dist*Math.cos(i);
+		// x = dist*Math.sin(angle);
+		// y = dist*Math.cos(angle);
 
 		// canvas.strokeStyle = "white";
 		// canvas.beginPath();
