@@ -226,6 +226,17 @@ function castRayY(angle)
 	var c = currentTile(playerX, playerY);
 	var currentTileX = c[0];
 
+// make sure the angle is between 0 and 360 degrees
+		if(angle < 0)
+		{
+			angle = angle + Math.PI*2		
+		}
+		else if(angle > Math.PI*2)
+		{
+			angle = angle - Math.PI*2;
+		}
+		
+
 	var cosAlpha = Math.cos(Math.PI/2 + angle);
 	var sinAlpha = Math.sin(Math.PI/2 + angle);
 
@@ -255,12 +266,12 @@ function castRayY(angle)
 
 	distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
 
-	// canvas.strokeStyle = "blue";
-	// canvas.beginPath();
-	// canvas.moveTo(playerX,playerY);
-	// canvas.lineTo(x,y);
-	// canvas.closePath();
-	// canvas.stroke();
+	canvas.strokeStyle = "blue";
+	canvas.beginPath();
+	canvas.moveTo(playerX,playerY);
+	canvas.lineTo(x,y);
+	canvas.closePath();
+	canvas.stroke();
 
 	return [distance,Math.floor(y)%TileHeight,checkTile(x,y)];
 }
@@ -304,12 +315,12 @@ function castRayX(angle)
 
 	distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
 
-	canvas.strokeStyle = "blue";
-	canvas.beginPath();
-	canvas.moveTo(playerX,playerY);
-	canvas.lineTo(x,y);
-	canvas.closePath();
-	canvas.stroke();
+	// canvas.strokeStyle = "blue";
+	// canvas.beginPath();
+	// canvas.moveTo(playerX,playerY);
+	// canvas.lineTo(x,y);
+	// canvas.closePath();
+	// canvas.stroke();
 
 	return [distance,Math.floor(x)%TileWidth,checkTile(x,y)];
 }
@@ -324,11 +335,11 @@ function castRays()
 	{
 		FOVCorrect += AngleIncrement;
 
-		a = castRayX(i);
-		b = castRayY(i);
+		var a = castRayX(i);
+		var b = castRayY(i);
 
-		distX = a[0];
-		distY = b[0];
+		var distX = a[0];
+		var distY = b[0];
 
 		var dist = Math.min(distX,distY);
 
@@ -349,8 +360,8 @@ function castRays()
 		}
 
 		// draw the ray
-		//x = dist*Math.sin(i);
-		//y = dist*Math.cos(i);
+		// x = dist*Math.sin(i);
+		// y = dist*Math.cos(i);
 
 		// canvas.strokeStyle = "white";
 		// canvas.beginPath();
