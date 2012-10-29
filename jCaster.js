@@ -8,6 +8,7 @@ var img = null;
 var img1 = null;
 
 var EnableTextureMapping = 1;
+var EnableMap = 1;
 
 // world constants
 var MapWidth = 10;
@@ -363,16 +364,19 @@ function castRays()
 			type = a[2];
 		}
 
-		// draw the ray
-		x = dist*Math.sin(angle);
-		y = dist*Math.cos(angle);
+		if(EnableMap == 1)
+		{
+			// draw the rays on the map
+			x = dist*Math.sin(angle);
+			y = dist*Math.cos(angle);
 
-		canvas.strokeStyle = "white";
-		canvas.beginPath();
-		canvas.moveTo(playerX,playerY);
-		canvas.lineTo(playerX + x, playerY - y);
-		canvas.closePath();
-		canvas.stroke();
+			canvas.strokeStyle = "white";
+			canvas.beginPath();
+			canvas.moveTo(playerX,playerY);
+			canvas.lineTo(playerX + x, playerY - y);
+			canvas.closePath();
+			canvas.stroke();
+		}
 
 		// correct for fishbowl effect
 		dist = dist*Math.cos(FOVCorrect);
@@ -463,8 +467,12 @@ gameLoop();
 
 function gameLoop()
 {
-	drawMap();
-	drawPlayer();
+	if(EnableMap == 1)
+	{
+		drawMap();
+		drawPlayer();
+	}
+
 	processKeyboard();
 	drawFloorAndSky();
 	castRays();
