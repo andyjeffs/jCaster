@@ -352,30 +352,15 @@ function castRayX(angle)
 
 function castRays()
 {
-	//printMsg("angle = " + playerDir*(180/Math.PI));
-
-	// draw the direction of the player
-	// x = 300*Math.sin(playerDir);
-	// y = 300*Math.cos(playerDir);
-
-	// canvas.beginPath();
-	// canvas.strokeStyle = "white";
-	// canvas.moveTo(playerX,playerY);
-	// canvas.lineTo(playerX + x, playerY - y);
-	// canvas.stroke();
-	// canvas.closePath();
-	
 	var x5=0;
 	var FOVCorrect = -Math.PI/6;
 	var i = 0;
 
+	// cast the rays
 	for(i = playerDir-FOV/2; i < (playerDir+FOV/2); i += AngleIncrement)
-	//i = playerDir;
-	//if(1)
 	{
 		FOVCorrect += AngleIncrement;
-		// cast the rays
-		//i=i+0.000001;
+
 		a = castRayX(i);
 		b = castRayY(i);
 
@@ -411,7 +396,10 @@ function castRays()
 		// canvas.closePath();
 		// canvas.stroke();
 
+		// correct for fishbowl effect
 		dist = dist*Math.cos(FOVCorrect);
+		
+		// calculate the height of the wall
 		var height = TileZ/dist*DistanceToScreen;
 
 		if(EnableTextureMapping == 1)
@@ -427,12 +415,12 @@ function castRays()
 		}
 		else
 		{
-			// canvas3d.strokeStyle = color;
-			// canvas3d.beginPath();
-			// canvas3d.moveTo(x5,ScreenHeight/2-height/2);
-			// canvas3d.lineTo(x5,ScreenHeight/2+height/2);
-			// canvas3d.closePath();
-			// canvas3d.stroke();
+			canvas3d.strokeStyle = color;
+			canvas3d.beginPath();
+			canvas3d.moveTo(x5,ScreenHeight/2-height/2);
+			canvas3d.lineTo(x5,ScreenHeight/2+height/2);
+			canvas3d.closePath();
+			canvas3d.stroke();
 		}
 		
 		x5 = x5 + 1;
