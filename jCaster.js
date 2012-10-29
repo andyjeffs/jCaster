@@ -3,6 +3,9 @@
 var canvas = null;
 var canvas3d = null;
 
+// textures
+var img = null;
+
 // world constants
 var MapWidth = 10;
 var MapHeight = 10;
@@ -59,6 +62,9 @@ function init()
 	// set the canvas size - not working??
 	//canvas.width = MapWidth*TileWidth;
 	//canvas.height = MapHeight*TileHeight;
+
+	img = new Image();
+	img.src = "greystone.png";
 
 	setInterval(gameLoop,1000/FPS);
 
@@ -281,14 +287,14 @@ function castRayY(angle)
 		dist = 10000;
 	}
 
-	canvas.strokeStyle = "blue";
-	canvas.beginPath();
-	canvas.moveTo(playerX,playerY);
-	canvas.lineTo(x,y);
-	canvas.closePath();
-	canvas.stroke();
+	// canvas.strokeStyle = "blue";
+	// canvas.beginPath();
+	// canvas.moveTo(playerX,playerY);
+	// canvas.lineTo(x,y);
+	// canvas.closePath();
+	// canvas.stroke();
 
-	return distance;
+	return [distance,y%TileHeight];
 }
 
 function castRayX(angle)
@@ -375,7 +381,7 @@ function castRayX(angle)
 		dist = 100000;
 	}
 
-	return distance;
+	return [distance,x%TileWidth];
 }
 
 function castRays()
@@ -402,23 +408,26 @@ function castRays()
 	{
 		FOVCorrect += AngleIncrement;
 		// cast the rays
-		i=i+0.000001;
-		var distX = castRayX(i);
-		var distY = castRayY(i);
+		//i=i+0.000001;
+		a = castRayX(i);
+		b = castRayY(i);
 
-		//printMsg("distY = " + distY);
-
-		//console.log(distX + " - " + distY );
+		distX = a[0];
+		distY = b[0];
 
 		var dist = Math.min(distX,distY);
+
+		var tex = 0;
 
 		if(distX > distY)
 		{
 			color = '#00FF00';
+			tex = b[1];
 		}
 		else
 		{
 			color = '#008800';
+			tex = a[1];
 		}
 
 		// draw the ray
@@ -435,14 +444,18 @@ function castRays()
 		dist = dist*Math.cos(FOVCorrect);
 
 		height = TileZ/dist*DistanceToScreen;
-		x5 = x5 + 1;
 
-		canvas3d.strokeStyle = color;
-		canvas3d.beginPath();
-		canvas3d.moveTo(x5,ScreenHeight/2-height/2);
-		canvas3d.lineTo(x5,ScreenHeight/2+height/2);
-		canvas3d.closePath();
-		canvas3d.stroke();
+
+		canvas3d.drawImage(img,tex,0,1,TileHeight,x5,ScreenHeight/2 - height/2,1,height);
+
+
+		// canvas3d.strokeStyle = color;
+		// canvas3d.beginPath();
+		// canvas3d.moveTo(x5,ScreenHeight/2-height/2);
+		// canvas3d.lineTo(x5,ScreenHeight/2+height/2);
+		// canvas3d.closePath();
+		// canvas3d.stroke();
+				x5 = x5 + 1;
 	}
 }
 
@@ -513,9 +526,12 @@ gameLoop();
 
 function gameLoop()
 {
-	drawMap();
-	drawPlayer();
+	//drawMap();
+	//drawPlayer();
 	processKeyboard();
 	drawFloorAndSky();
 	castRays();
+
+	//canvas.drawImage(img, 0, 0);
+	//canvas.drawImage(img,0,0,1,64,0,0,1,64);
 }
