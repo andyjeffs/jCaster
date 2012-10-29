@@ -227,8 +227,8 @@ function castRayY(angle)
 	var y = 0.0;
 	var distance = 0.0;
 
-	var c = currentTile(playerX, playerY);
-	var currentTileX = c[0];
+	var tile = currentTile(playerX, playerY);
+	var currentTileX = tile.x;
 
 	var cosAlpha = Math.cos(Math.PI/2 + angle);
 	var sinAlpha = Math.sin(Math.PI/2 + angle);
@@ -259,14 +259,7 @@ function castRayY(angle)
 
 	distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
 
-	// canvas.strokeStyle = "blue";
-	// canvas.beginPath();
-	// canvas.moveTo(playerX,playerY);
-	// canvas.lineTo(x,y);
-	// canvas.closePath();
-	// canvas.stroke();
-
-	return [distance,Math.floor(y)%TileHeight,checkTile(x + dir*1,y)];
+	return {distance:distance, textureCoord:Math.floor(y)%TileHeight, tileContent:checkTile(x + dir*1,y)};
 }
 
 // find the X intercept
@@ -276,8 +269,8 @@ function castRayX(angle)
 	var y = 0.0;
 	var distance = 0.0;
 
-	var c = currentTile(playerX, playerY);
-	var currentTileY = c[1];
+	var tile = currentTile(playerX, playerY);
+	var currentTileY = tile.y;
 
 	var cosAlpha = Math.cos(Math.PI/2 + angle);
 	var sinAlpha = Math.sin(Math.PI/2 + angle);
@@ -308,14 +301,7 @@ function castRayX(angle)
 
 	distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
 
-	// canvas.strokeStyle = "blue";
-	// canvas.beginPath();
-	// canvas.moveTo(playerX,playerY);
-	// canvas.lineTo(x,y);
-	// canvas.closePath();
-	// canvas.stroke();
-
-	return [distance,Math.floor(x)%TileWidth,checkTile(x,y + dir*1)];
+	return {distance:distance, textureCoord:Math.floor(x)%TileWidth, tileContent:checkTile(x,y + dir*1)};
 }
 
 function castRays()
@@ -340,28 +326,26 @@ function castRays()
 
 		FOVCorrect += AngleIncrement;
 
-		var a = castRayX(angle);
-		var b = castRayY(angle);
+		var rayX = castRayX(angle);
+		var rayY = castRayY(angle);
 
-		var distX = a[0];
-		var distY = b[0];
+		var dist = 0;
+		var texture = 0;
+		var textureCoord = 0;
 
-		var dist = Math.min(distX,distY);
-
-		var tex = 0;
-		var type = 0;
-
-		if(distX > distY)
+		if(rayX.distance > rayY.distance)
 		{
-			color = '#00FF00';
-			tex = b[1];
-			type = b[2];
+			color = '#00FF00'; // for non texture mapped
+			texture = rayY.tileContent;
+			textureCoord = rayY.textureCoord;
+			dist = rayY.distance;
 		}
 		else
 		{
-			color = '#008800';
-			tex = a[1];
-			type = a[2];
+			color = '#008800'; // for non texture mapped
+			texture = rayX.tileContent;
+			textureCoord = rayX.textureCoord;
+			dist = rayX.distance;
 		}
 
 		if(EnableMap == 1)
@@ -386,13 +370,13 @@ function castRays()
 
 		if(EnableTextureMapping == 1)
 		{
-			if(type == 1)
+			if(texture == 1)
 			{
-				canvas3d.drawImage(img,tex,0,1,TileHeight,yCounter,ScreenHeight/2 - height/2,1,height);
+				canvas3d.drawImage(img,textureCoord,0,1,TileHeight,yCounter,ScreenHeight/2 - height/2,1,height);
 			}
-			else// if(type == 2)
+			else if(texture == 2)
 			{
-				canvas3d.drawImage(img1,tex,0,1,TileHeight,yCounter,ScreenHeight/2 - height/2,1,height);
+				canvas3d.drawImage(img1,textureCoord,0,1,TileHeight,yCounter,ScreenHeight/2 - height/2,1,height);
 			}
 		}
 		else
@@ -420,17 +404,13 @@ function printMsg(msg)
 function checkTile(worldX, worldY)
 {
 	tile = currentTile(worldX, worldY);
-
-	tileX = tile[0];
-	tileY = tile[1];
-
 	content = 0;
 
-	if(tileX >= 0 && tileX < MapWidth)
+	if(tile.x >= 0 && tile.x < MapWidth)
 	{
-		if(tileY >= 0 && tileY < MapHeight)
+		if(tile.y >= 0 && tile.y < MapHeight)
 		{
-			content = map[(tileY*MapHeight) + tileX];
+			content = map[(tile.y*MapHeight) + tile.x];
 		}
 	}
 	else
@@ -448,7 +428,7 @@ function currentTile(worldX, worldY)
 	tileX = Math.floor(worldX/TileWidth);
 	tileY = Math.floor(worldY/TileHeight);
 
-	return [tileX, tileY];
+	return {x:tileX, y:tileY};
 }
 
 function drawFloorAndSky()
