@@ -6,6 +6,8 @@ var canvas3d = null;
 // textures
 var img = null;
 
+var EnableTextureMapping = 0;
+
 // world constants
 var MapWidth = 10;
 var MapHeight = 10;
@@ -294,7 +296,8 @@ function castRayY(angle)
 	// canvas.closePath();
 	// canvas.stroke();
 
-	return [distance,y%TileHeight];
+
+	return [distance,Math.floor(y)%TileHeight];
 }
 
 function castRayX(angle)
@@ -381,7 +384,7 @@ function castRayX(angle)
 		dist = 100000;
 	}
 
-	return [distance,x%TileWidth];
+	return [distance,Math.floor(x)%TileWidth];
 }
 
 function castRays()
@@ -442,20 +445,23 @@ function castRays()
 		// canvas.stroke();
 
 		dist = dist*Math.cos(FOVCorrect);
-
 		height = TileZ/dist*DistanceToScreen;
 
-
-		canvas3d.drawImage(img,tex,0,1,TileHeight,x5,ScreenHeight/2 - height/2,1,height);
-
-
-		// canvas3d.strokeStyle = color;
-		// canvas3d.beginPath();
-		// canvas3d.moveTo(x5,ScreenHeight/2-height/2);
-		// canvas3d.lineTo(x5,ScreenHeight/2+height/2);
-		// canvas3d.closePath();
-		// canvas3d.stroke();
-				x5 = x5 + 1;
+		if(EnableTextureMapping == 1)
+		{		
+			canvas3d.drawImage(img,tex,0,1,TileHeight,x5,ScreenHeight/2 - height/2,1,height);
+		}
+		else
+		{
+			canvas3d.strokeStyle = color;
+			canvas3d.beginPath();
+			canvas3d.moveTo(x5,ScreenHeight/2-height/2);
+			canvas3d.lineTo(x5,ScreenHeight/2+height/2);
+			canvas3d.closePath();
+			canvas3d.stroke();
+		}
+		
+		x5 = x5 + 1;
 	}
 }
 
@@ -516,7 +522,7 @@ function drawFloorAndSky()
 
 	// draw the floor
 	//canvas3d.beginPath();
-	canvas3d.fillStyle = "black";
+	canvas3d.fillStyle = "grey";
 	canvas3d.fillRect(0,ScreenHeight/2,ScreenWidth,ScreenHeight);
 	//canvas3d.closePath();		
 }
