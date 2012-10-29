@@ -30,7 +30,7 @@ var DistanceToScreen = (ScreenWidth/2)/Math.tan(FOV/2);
 var FPS = 30; // frames per second
 
 // the world map
-var map = [1,1,1,1,1,1,1,1,1,1,
+var map = [1,2,2,2,2,2,2,2,2,1,
            1,0,0,0,0,0,0,0,0,1,
            1,0,0,0,0,0,0,0,0,1,
            1,0,0,0,0,0,0,0,0,1,
@@ -112,10 +112,8 @@ function drawMap()
 // draws the player on the map
 function drawPlayer()
 {
-	//canvas.beginPath();
 	canvas.arc(playerX,playerY,5,0,2*Math.PI);
 	canvas.fill();
-	//canvas.closePath();
 }
 
 // keyboard input
@@ -267,7 +265,7 @@ function castRayY(angle)
 	// canvas.closePath();
 	// canvas.stroke();
 
-	return [distance,Math.floor(y)%TileHeight,checkTile(x,y)];
+	return [distance,Math.floor(y)%TileHeight,checkTile(x + dir*1,y)];
 }
 
 // find the X intercept
@@ -316,7 +314,7 @@ function castRayX(angle)
 	// canvas.closePath();
 	// canvas.stroke();
 
-	return [distance,Math.floor(x)%TileWidth,checkTile(x,y)];
+	return [distance,Math.floor(x)%TileWidth,checkTile(x,y + dir*1)];
 }
 
 function castRays()
@@ -365,16 +363,16 @@ function castRays()
 			type = a[2];
 		}
 
-		// // draw the ray
-		// x = dist*Math.sin(angle);
-		// y = dist*Math.cos(angle);
+		// draw the ray
+		x = dist*Math.sin(angle);
+		y = dist*Math.cos(angle);
 
-		// canvas.strokeStyle = "white";
-		// canvas.beginPath();
-		// canvas.moveTo(playerX,playerY);
-		// canvas.lineTo(playerX + x, playerY - y);
-		// canvas.closePath();
-		// canvas.stroke();
+		canvas.strokeStyle = "white";
+		canvas.beginPath();
+		canvas.moveTo(playerX,playerY);
+		canvas.lineTo(playerX + x, playerY - y);
+		canvas.closePath();
+		canvas.stroke();
 
 		// correct for fishbowl effect
 		dist = dist*Math.cos(FOVCorrect);
@@ -409,12 +407,9 @@ function castRays()
 
 function printMsg(msg)
 {
-	// print the player view direction
-	//canvas.beginPath();
 	canvas.font = "14px Arial";
 	canvas.fillStyle = "black";
 	canvas.fillText(msg,20,20);
-	//canvas.closePath();
 }
 
 // Checks if there is a tile at the current world x,y position
@@ -440,8 +435,6 @@ function checkTile(worldX, worldY)
 		content = 1;
 	}
 
-	//printMsg("Tile x: " + tileX + " Tile y: " + tileY + " Content: " + content);
-
 	return content;
 }
 
@@ -457,16 +450,12 @@ function currentTile(worldX, worldY)
 function drawFloorAndSky()
 {
 	// draw the sky
-	//canvas3d.beginPath();
 	canvas3d.fillStyle = "blue";
 	canvas3d.fillRect(0,0,ScreenWidth,ScreenHeight/2);
-	//canvas3d.closePath();
 
 	// draw the floor
-	//canvas3d.beginPath();
 	canvas3d.fillStyle = "grey";
-	canvas3d.fillRect(0,ScreenHeight/2,ScreenWidth,ScreenHeight);
-	//canvas3d.closePath();		
+	canvas3d.fillRect(0,ScreenHeight/2,ScreenWidth,ScreenHeight);	
 }
 
 init();
