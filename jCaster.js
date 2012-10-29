@@ -7,7 +7,7 @@ var canvas3d = null;
 var img = null;
 var img1 = null;
 
-var EnableTextureMapping = 1;
+var EnableTextureMapping = 0;
 
 // world constants
 var MapWidth = 10;
@@ -352,12 +352,11 @@ function castRayX(angle)
 
 function castRays()
 {
-	var x5=0;
+	var yCounter = 0;
 	var FOVCorrect = -Math.PI/6;
-	var i = 0;
 
 	// cast the rays
-	for(i = playerDir-FOV/2; i < (playerDir+FOV/2); i += AngleIncrement)
+	for(var i = playerDir-FOV/2; i < (playerDir+FOV/2); i += AngleIncrement)
 	{
 		FOVCorrect += AngleIncrement;
 
@@ -406,24 +405,24 @@ function castRays()
 		{
 			if(type == 1)
 			{
-				canvas3d.drawImage(img,tex,0,1,TileHeight,x5,ScreenHeight/2 - height/2,1,height);
+				canvas3d.drawImage(img,tex,0,1,TileHeight,yCounter,ScreenHeight/2 - height/2,1,height);
 			}
 			else// if(type == 2)
 			{
-				canvas3d.drawImage(img1,tex,0,1,TileHeight,x5,ScreenHeight/2 - height/2,1,height);
+				canvas3d.drawImage(img1,tex,0,1,TileHeight,yCounter,ScreenHeight/2 - height/2,1,height);
 			}
 		}
 		else
 		{
 			canvas3d.strokeStyle = color;
 			canvas3d.beginPath();
-			canvas3d.moveTo(x5,ScreenHeight/2-height/2);
-			canvas3d.lineTo(x5,ScreenHeight/2+height/2);
+			canvas3d.moveTo(yCounter,ScreenHeight/2-height/2);
+			canvas3d.lineTo(yCounter,ScreenHeight/2+height/2);
 			canvas3d.closePath();
 			canvas3d.stroke();
 		}
 		
-		x5 = x5 + 1;
+		yCounter++;
 	}
 }
 
@@ -495,9 +494,8 @@ gameLoop();
 function gameLoop()
 {
 	drawMap();
-	//drawPlayer();
+	drawPlayer();
 	processKeyboard();
 	drawFloorAndSky();
 	castRays();
-	printMsg("angle = " + playerDir*(180/Math.PI));
 }
