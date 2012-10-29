@@ -18,8 +18,8 @@ var TileHeight = 64;
 // The 3d height of the tiles
 var TileZ = 64;
 
-var ScreenWidth = 1200;
-var ScreenHeight = 800;
+var ScreenWidth = 640;
+var ScreenHeight = 480;
 
 var FOV = Math.PI/3; // field of view of the player
 
@@ -58,14 +58,19 @@ var keyRight = false;
 function init()
 {
 	// get the canvas
-	canvas = document.getElementById("canvasID").getContext("2d");
+	c2d = document.getElementById("canvasID");
+	canvas = c2d.getContext("2d");
 
-	canvas3d = document.getElementById("canvas3d").getContext("2d");
+	c3d = document.getElementById("canvas3d")
+	canvas3d = c3d.getContext("2d");
 
-	// set the canvas size - not working??
-	//canvas.width = MapWidth*TileWidth;
-	//canvas.height = MapHeight*TileHeight;
-
+	// set the canvas size
+	c2d.height = MapHeight*TileHeight;
+	c2d.width = MapWidth*TileWidth;
+	
+	c3d.height = ScreenHeight;
+	c3d.width = ScreenWidth;
+	
 	img = new Image();
 	img.src = "greystone.png";
 
@@ -469,8 +474,8 @@ gameLoop();
 
 function gameLoop()
 {
-	//drawMap();
-	//drawPlayer();
+	drawMap();
+	drawPlayer();
 	processKeyboard();
 	drawFloorAndSky();
 	castRays();
