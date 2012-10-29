@@ -255,12 +255,12 @@ function castRayY(angle)
 
 	distance = Math.sqrt((x-playerX)*(x-playerX)+ (y-playerY)*(y-playerY));
 
-	canvas.strokeStyle = "blue";
-	canvas.beginPath();
-	canvas.moveTo(playerX,playerY);
-	canvas.lineTo(x,y);
-	canvas.closePath();
-	canvas.stroke();
+	// canvas.strokeStyle = "blue";
+	// canvas.beginPath();
+	// canvas.moveTo(playerX,playerY);
+	// canvas.lineTo(x,y);
+	// canvas.closePath();
+	// canvas.stroke();
 
 	return [distance,Math.floor(y)%TileHeight,checkTile(x,y)];
 }
@@ -323,7 +323,7 @@ function castRays()
 	for(var i = playerDir-FOV/2; i < (playerDir+FOV/2); i += AngleIncrement)
 	{
 		// make sure the angle is between 0 and 360 degrees
-		angle = i;
+		var angle = i;
 
 		if(angle < 0)
 		{
@@ -361,15 +361,15 @@ function castRays()
 		}
 
 		// draw the ray
-		// x = dist*Math.sin(angle);
-		// y = dist*Math.cos(angle);
+		x = dist*Math.sin(angle);
+		y = dist*Math.cos(angle);
 
-		// canvas.strokeStyle = "white";
-		// canvas.beginPath();
-		// canvas.moveTo(playerX,playerY);
-		// canvas.lineTo(playerX + x, playerY - y);
-		// canvas.closePath();
-		// canvas.stroke();
+		canvas.strokeStyle = "white";
+		canvas.beginPath();
+		canvas.moveTo(playerX,playerY);
+		canvas.lineTo(playerX + x, playerY - y);
+		canvas.closePath();
+		canvas.stroke();
 
 		// correct for fishbowl effect
 		dist = dist*Math.cos(FOVCorrect);
