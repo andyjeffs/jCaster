@@ -7,7 +7,7 @@ var canvas3d = null;
 var img = null;
 var img1 = null;
 
-var EnableTextureMapping = 0;
+var EnableTextureMapping = 1;
 
 // world constants
 var MapWidth = 10;
@@ -18,8 +18,8 @@ var TileHeight = 64;
 // The 3d height of the tiles
 var TileZ = 64;
 
-var ScreenWidth = 640;
-var ScreenHeight = 400;
+var ScreenWidth = 1200;
+var ScreenHeight = 800;
 
 var FOV = Math.PI/3; // field of view of the player
 
@@ -46,8 +46,8 @@ var playerX = 200;
 var playerY = 200;
 var playerDir = 0; // direction the player is looking in (degrees)
 
-var rotationAmount = FOV/ScreenWidth*16; // amount to rotate player (CW or CCW)
-var moveDistance = 3;	  // amount to move the player (forward or backward)
+var rotationAmount = FOV/ScreenWidth*64; // amount to rotate player (CW or CCW)
+var moveDistance = 6;	  // amount to move the player (forward or backward)
 
 // keyboard
 var keyUp = false;
@@ -360,16 +360,16 @@ function castRays()
 			type = a[2];
 		}
 
-		// draw the ray
-		x = dist*Math.sin(angle);
-		y = dist*Math.cos(angle);
+		// // draw the ray
+		// x = dist*Math.sin(angle);
+		// y = dist*Math.cos(angle);
 
-		canvas.strokeStyle = "white";
-		canvas.beginPath();
-		canvas.moveTo(playerX,playerY);
-		canvas.lineTo(playerX + x, playerY - y);
-		canvas.closePath();
-		canvas.stroke();
+		// canvas.strokeStyle = "white";
+		// canvas.beginPath();
+		// canvas.moveTo(playerX,playerY);
+		// canvas.lineTo(playerX + x, playerY - y);
+		// canvas.closePath();
+		// canvas.stroke();
 
 		// correct for fishbowl effect
 		dist = dist*Math.cos(FOVCorrect);
@@ -469,8 +469,8 @@ gameLoop();
 
 function gameLoop()
 {
-	drawMap();
-	drawPlayer();
+	//drawMap();
+	//drawPlayer();
 	processKeyboard();
 	drawFloorAndSky();
 	castRays();
