@@ -218,11 +218,11 @@ function keyUpEvent(event)
 
 function castRayY(angle)
 {
-	x = 0.0;
-	y = 0.0;
+	var x = 0.0;
+	var y = 0.0;
 
-	c = currentTile(playerX, playerY);
-	currentTileX = c[0];
+	var c = currentTile(playerX, playerY);
+	var currentTileX = c[0];
 
 	var cosAlpha = Math.cos(Math.PI/2 + angle);
 	var sinAlpha = Math.sin(Math.PI/2 + angle);
@@ -401,8 +401,8 @@ function castRays()
 		}
 
 		// draw the ray
-		x = dist*Math.sin(i);
-		y = dist*Math.cos(i);
+		//x = dist*Math.sin(i);
+		//y = dist*Math.cos(i);
 
 		// canvas.strokeStyle = "white";
 		// canvas.beginPath();
@@ -412,7 +412,7 @@ function castRays()
 		// canvas.stroke();
 
 		dist = dist*Math.cos(FOVCorrect);
-		height = TileZ/dist*DistanceToScreen;
+		var height = TileZ/dist*DistanceToScreen;
 
 		if(EnableTextureMapping == 1)
 		{
