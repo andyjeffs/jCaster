@@ -5,8 +5,9 @@ var canvas3d = null;
 
 // textures
 var img = null;
+var img1 = null;
 
-var EnableTextureMapping = 0;
+var EnableTextureMapping = 1;
 
 // world constants
 var MapWidth = 10;
@@ -34,8 +35,8 @@ var map = [1,1,1,1,1,1,1,1,1,1,
            1,0,0,0,0,0,0,0,0,1,
            1,0,0,0,0,0,0,0,0,1,
            1,0,0,0,0,0,0,0,0,1,
-           1,0,0,0,0,0,1,1,0,1,
-           1,0,0,1,1,1,1,0,0,1,
+           1,0,0,0,0,0,2,1,0,1,
+           1,0,0,2,2,2,2,0,0,1,
            1,0,0,0,0,0,0,0,0,1,
            1,0,0,0,0,0,0,0,0,1,
            1,1,1,1,1,1,1,1,1,1];
@@ -67,6 +68,9 @@ function init()
 
 	img = new Image();
 	img.src = "greystone.png";
+
+	img1 = new Image();
+	img1.src = "wood.png";
 
 	setInterval(gameLoop,1000/FPS);
 
@@ -297,7 +301,7 @@ function castRayY(angle)
 	// canvas.stroke();
 
 
-	return [distance,Math.floor(y)%TileHeight];
+	return [distance,Math.floor(y)%TileHeight,checkTile(x,y)];
 }
 
 function castRayX(angle)
@@ -384,7 +388,7 @@ function castRayX(angle)
 		dist = 100000;
 	}
 
-	return [distance,Math.floor(x)%TileWidth];
+	return [distance,Math.floor(x)%TileWidth,checkTile(x,y)];
 }
 
 function castRays()
@@ -421,16 +425,19 @@ function castRays()
 		var dist = Math.min(distX,distY);
 
 		var tex = 0;
+		var type = 0;
 
 		if(distX > distY)
 		{
 			color = '#00FF00';
 			tex = b[1];
+			type = b[2];
 		}
 		else
 		{
 			color = '#008800';
 			tex = a[1];
+			type = a[2];
 		}
 
 		// draw the ray
@@ -448,8 +455,15 @@ function castRays()
 		height = TileZ/dist*DistanceToScreen;
 
 		if(EnableTextureMapping == 1)
-		{		
-			canvas3d.drawImage(img,tex,0,1,TileHeight,x5,ScreenHeight/2 - height/2,1,height);
+		{
+			if(type == 1)
+			{
+				canvas3d.drawImage(img,tex,0,1,TileHeight,x5,ScreenHeight/2 - height/2,1,height);
+			}
+			else// if(type == 2)
+			{
+				canvas3d.drawImage(img1,tex,0,1,TileHeight,x5,ScreenHeight/2 - height/2,1,height);
+			}
 		}
 		else
 		{
