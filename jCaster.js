@@ -49,12 +49,17 @@ var playerDir = 0; // direction the player is looking in (degrees)
 
 var rotationAmount = FOV/ScreenWidth*64; // amount to rotate player (CW or CCW)
 var moveDistance = 6;	  // amount to move the player (forward or backward)
+var verticalLookDistance = 15; // amount to increment up/down look
+
+var verticalCentre = ScreenHeight/2;
 
 // keyboard
 var keyUp = false;
 var keyDown = false;
 var keyLeft = false;
 var keyRight = false;
+var keyLookUp = false;
+var keyLookDown = false;
 
 function init()
 {
@@ -166,6 +171,15 @@ function processKeyboard()
 		playerX = newPlayerX;
 		playerY = newPlayerY;
 	}
+
+	if(keyLookUp)
+	{
+		verticalCentre += verticalLookDistance;
+	}
+	else if(keyLookDown)
+	{
+		verticalCentre -= verticalLookDistance;
+	}
 }
 
 function keyDownEvent(event)
@@ -190,6 +204,16 @@ function keyDownEvent(event)
 		// down arrow
 		case 40:
 		keyDown = true;
+		break;
+
+		// look up (A)
+		case 65:
+		keyLookUp = true;
+		break;
+
+		// look down (Z)
+		case 90:
+		keyLookDown = true;
 		break;
 	}
 }
@@ -216,6 +240,16 @@ function keyUpEvent(event)
 		// down arrow
 		case 40:
 		keyDown = false;
+		break;
+
+		// look up (A)
+		case 65:
+		keyLookUp = false;
+		break;
+
+		// look down (Z)
+		case 90:
+		keyLookDown = false;
 		break;
 	}
 }
@@ -372,11 +406,11 @@ function castRays()
 		{
 			if(texture == 1)
 			{
-				canvas3d.drawImage(img,textureCoord,0,1,TileHeight,yCounter,ScreenHeight/2 - height/2,1,height);
+				canvas3d.drawImage(img,textureCoord,0,1,TileHeight,yCounter,verticalCentre - height/2,1,height);
 			}
 			else if(texture == 2)
 			{
-				canvas3d.drawImage(img1,textureCoord,0,1,TileHeight,yCounter,ScreenHeight/2 - height/2,1,height);
+				canvas3d.drawImage(img1,textureCoord,0,1,TileHeight,yCounter,verticalCentre - height/2,1,height);
 			}
 		}
 		else
@@ -435,11 +469,11 @@ function drawFloorAndSky()
 {
 	// draw the sky
 	canvas3d.fillStyle = "blue";
-	canvas3d.fillRect(0,0,ScreenWidth,ScreenHeight/2);
+	canvas3d.fillRect(0,0,ScreenWidth,verticalCentre);
 
 	// draw the floor
 	canvas3d.fillStyle = "grey";
-	canvas3d.fillRect(0,ScreenHeight/2,ScreenWidth,ScreenHeight);	
+	canvas3d.fillRect(0,verticalCentre,ScreenWidth,ScreenHeight);	
 }
 
 init();
